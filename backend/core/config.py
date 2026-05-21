@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     llm_max_rpm: int = 35
     llm_max_parallel: int = 1
     llm_retry_max: int = 6
+    # Per-request read timeout (seconds). Reasoning models often exceed 120s.
+    llm_timeout_seconds: int = 300
+
+    # Demo mode: use user prompts directly as GEPA seed (skip LLM seed generation)
+    demo_mode: bool = False
 
     # Hiring Configuration
     hire_threshold: float = 3.0

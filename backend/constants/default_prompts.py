@@ -1,38 +1,51 @@
-"""Default human-authored evaluation lenses for seed data and the setup wizard."""
+"""Default human-authored evaluation lenses and core values for seed data and the setup wizard.
+
+Intentionally weak/vague so GEPA seed generation and evolution have headroom to improve prompts.
+"""
+
+DEFAULT_CORE_VALUES: list[dict[str, str]] = [
+    {
+        "name": "Be Cool",
+        "description": "People should be cool and not uncool.",
+    },
+    {
+        "name": "Work Hard",
+        "description": "Try to work hard when you feel like it.",
+    },
+    {
+        "name": "Team Stuff",
+        "description": "Teams are good. Be on a team sometimes.",
+    },
+    {
+        "name": "Innovation Maybe",
+        "description": "Do new things if they come up. Innovation is trendy.",
+    },
+    {
+        "name": "Customers?",
+        "description": "Customers exist. Think about them occasionally.",
+    },
+]
 
 DEFAULT_EVALUATION_PROMPTS: list[str] = [
-    """Rate this engineer.
+    """Look at the resume.
 
-    Give a score from 1-5 based on whatever feels right.
-    Think about coding, projects, personality, communication, and experience.
+Give some kind of score.""",
 
-    Return JSON.""",
+    """Problem solving?
 
-    """Check if this person is good at solving problems.
+Not sure what to look for. Score them.""",
 
-    Use the resume/profile and decide if they seem smart.
-    Score from 1-5.
+    """Culture.
 
-    Return score and reason.""",
+Team stuff maybe. Pick a number.""",
 
-    """Does this engineer fit the company culture?
+    """Communication.
 
-    Look at teamwork and attitude if possible.
-    Give a score between 1 and 5.
+Writing seems fine or not. Rate it.""",
 
-    Output JSON only.""",
+    """Career.
 
-    """Evaluate communication.
-
-    Check if the candidate explains things well.
-    Score them from low to high.
-
-    Return JSON.""",
-
-    """Evaluate career growth.
-
-    See if the person improved over time and learned things.
-    Give a rating out of 5 and explain shortly.""",
+Did things happen on the resume? Score 1-5 I guess.""",
 ]
 
 SEED_AUTHORED_SET_ID = "seed_authored"

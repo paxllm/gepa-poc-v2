@@ -8,12 +8,13 @@ each example as 1.0 (correct hire/reject prediction) or 0.0 (mismatch).
 from __future__ import annotations
 
 import json
+import logging
 from collections.abc import Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, TypedDict
 
 from backend.core.config import get_settings
-from backend.core.litellm_client import completion_with_retry
+from backend.core.litellm_client import completion_with_retry, get_llm_timeout
 from backend.gepa_integration.evaluator import _parse_prompt_score
 from backend.gepa_integration.prompt_templates import (
     build_evaluation_prompt,
@@ -23,7 +24,9 @@ from backend.gepa_integration.prompt_templates import (
 from gepa.core.adapter import EvaluationBatch, GEPAAdapter
 
 PROMPT_KEYS = ("prompt_1", "prompt_2", "prompt_3", "prompt_4", "prompt_5")
-LLM_TIMEOUT_SECONDS = 120
+MAX_LIVE_EVAL_OUTCOMES = 100
+
+logger = logging.getLogger(__name__)
 
 
 class HiringDataInst(TypedDict):
@@ -124,7 +127,7 @@ def _evaluate_one_prompt(
     completion = completion_with_retry(
         model=task_lm_model,
         messages=messages,
-        timeout=LLM_TIMEOUT_SECONDS,
+        timeout=get_llm_timeout(),
     )
     response_text = completion.choices[0].message.content or ""
     score = _parse_prompt_score(response_text, hire_threshold)
@@ -249,6 +252,52 @@ class HiringAdapter(GEPAAdapter[HiringDataInst, HiringTrajectory, HiringRolloutO
             status["seed_eval_completed"] = completed
             status["seed_eval_total"] = total
 
+    def _sync_live_val_accuracy(self, status: dict[str, Any]) -> None:
+        """Derive best_accuracy from completed live outcomes (matches the results table)."""
+        outcomes = status.get("live_eval_outcomes") or []
+        scored = [o for o in outcomes if not o.get("eval_error")]
+        if not scored:
+            return
+        status["best_accuracy"] = sum(1 for o in scored if o["is_correct"]) / len(scored)
+
+    def _record_eval_outcome(
+        self,
+        data: HiringDataInst,
+        *,
+        prediction: str,
+        expected_label: str,
+        aggregate_score: float | None,
+        is_correct: bool | None,
+        eval_error: str | None = None,
+    ) -> None:
+        if self.job_id is None or self.run_status is None:
+            return
+        status = self.run_status.get(self.job_id)
+        if status is None:
+            return
+
+        ctx = data.get("additional_context") or {}
+        resume_id_raw = ctx.get("resume_id")
+        resume_id = int(resume_id_raw) if resume_id_raw else None
+
+        outcomes = status.setdefault("live_eval_outcomes", [])
+        outcomes.append(
+            {
+                "resume_id": resume_id,
+                "candidate_name": ctx.get("candidate_name"),
+                "prediction": prediction,
+                "actual_label": expected_label,
+                "aggregate_score": aggregate_score,
+                "is_correct": is_correct if is_correct is not None else False,
+                "eval_error": eval_error,
+                "split": ctx.get("dataset_split"),
+            }
+        )
+        if len(outcomes) > MAX_LIVE_EVAL_OUTCOMES:
+            status["live_eval_outcomes"] = outcomes[-MAX_LIVE_EVAL_OUTCOMES:]
+        if status.get("phase") in (None, "starting", "seed_evaluation"):
+            self._sync_live_val_accuracy(status)
+
     def evaluate(
         self,
         batch: list[HiringDataInst],
@@ -279,6 +328,15 @@ class HiringAdapter(GEPAAdapter[HiringDataInst, HiringTrajectory, HiringRolloutO
                 )
             except Exception as exc:
                 score = 0.0
+                expected_label = data["answer"]
+                ctx = data.get("additional_context") or {}
+                candidate_name = ctx.get("candidate_name") or ctx.get("resume_id")
+                logger.warning(
+                    "Resume evaluation failed (job=%s, candidate=%s): %s",
+                    self.job_id,
+                    candidate_name,
+                    exc,
+                )
                 output = {
                     "aggregate_score": 0.0,
                     "prediction": "Rejected",
@@ -292,7 +350,7 @@ class HiringAdapter(GEPAAdapter[HiringDataInst, HiringTrajectory, HiringRolloutO
                             "prompt_results": {},
                             "aggregate_score": 0.0,
                             "prediction": "Rejected",
-                            "expected_label": data["answer"],
+                            "expected_label": expected_label,
                             "is_correct": False,
                             "feedback_by_prompt": {
                                 key: f"Evaluation failed: {exc}" for key in PROMPT_KEYS
@@ -301,6 +359,14 @@ class HiringAdapter(GEPAAdapter[HiringDataInst, HiringTrajectory, HiringRolloutO
                     )
                 outputs.append(output)
                 scores.append(score)
+                self._record_eval_outcome(
+                    data,
+                    prediction="Rejected",
+                    expected_label=expected_label,
+                    aggregate_score=None,
+                    is_correct=None,
+                    eval_error=str(exc),
+                )
                 self._update_eval_progress(i + 1, batch_total)
                 continue
 
@@ -308,6 +374,13 @@ class HiringAdapter(GEPAAdapter[HiringDataInst, HiringTrajectory, HiringRolloutO
             scores.append(score)
             if trajectories is not None and trajectory is not None:
                 trajectories.append(trajectory)
+            self._record_eval_outcome(
+                data,
+                prediction=output["prediction"],
+                expected_label=data["answer"],
+                aggregate_score=output["aggregate_score"],
+                is_correct=output["prediction"] == data["answer"],
+            )
             self._update_eval_progress(i + 1, batch_total)
 
         return EvaluationBatch(

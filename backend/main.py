@@ -11,7 +11,7 @@ from backend.core.database import init_db
 from backend.core.encoding import ensure_utf8_environment
 
 ensure_utf8_environment()
-from backend.routes import core_values, jobs, optimization, resumes, seed_prompts
+from backend.routes import config, core_values, jobs, optimization, resumes, seed_prompts
 
 
 @asynccontextmanager
@@ -38,6 +38,7 @@ app.add_middleware(
 )
 
 # Register routers
+app.include_router(config.router)
 app.include_router(jobs.router)
 app.include_router(core_values.router)
 app.include_router(resumes.router)

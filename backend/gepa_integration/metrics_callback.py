@@ -7,6 +7,7 @@ from __future__ import annotations
 import asyncio
 from typing import Any
 
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from backend.models.db_models import IterationMetrics, PromptEvolutionLog, TalentLens
@@ -74,7 +75,9 @@ class MetricsPersistenceCallback:
         score = event["average_score"]
         status = self.run_status[self.job_id]
 
-        status["best_accuracy"] = score
+        # During seed eval, live_eval_outcomes drives best_accuracy (matches the UI table).
+        if status.get("phase") != "seed_evaluation":
+            status["best_accuracy"] = score
         status["interim_best_prompts"] = [
             {"prompt_index": int(key.split("_")[1]), "prompt_text": text}
             for key, text in sorted(candidate.items())
@@ -151,6 +154,12 @@ class MetricsPersistenceCallback:
     ) -> None:
         interim_set_id = f"{self.candidate_set_id}_interim"
         async with self.session_factory() as session:
+            await session.execute(
+                delete(TalentLens).where(
+                    TalentLens.job_id == self.job_id,
+                    TalentLens.candidate_set_id == interim_set_id,
+                )
+            )
             for key, prompt_text in candidate.items():
                 idx = int(key.split("_")[1])
                 session.add(

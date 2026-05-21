@@ -3,6 +3,7 @@
 import json
 from unittest.mock import MagicMock, patch
 
+from backend.core.config import Settings
 from backend.gepa_integration.prompt_templates import compose_talent_lens_prompt
 from backend.gepa_integration.seed_generator import (
     _parse_seed_response,
@@ -36,6 +37,22 @@ def test_parse_seed_response_strips_composed_wrappers():
     result = _parse_seed_response(json.dumps(payload))
     assert result["prompt_1"] == "Inner lens text"
     assert result["prompt_2"] == "Lens 2"
+
+
+@patch("backend.gepa_integration.seed_generator.get_settings")
+@patch("backend.gepa_integration.seed_generator.completion_with_retry")
+def test_generate_seed_candidate_demo_mode_skips_llm(mock_completion, mock_get_settings):
+    mock_get_settings.return_value = Settings(demo_mode=True)
+
+    result = generate_seed_candidate(
+        USER_PROMPTS,
+        job_description=JD,
+        core_values=CV,
+        task_lm_model="openai/test",
+    )
+
+    assert result == {f"prompt_{i + 1}": p for i, p in enumerate(USER_PROMPTS)}
+    mock_completion.assert_not_called()
 
 
 @patch("backend.gepa_integration.seed_generator.completion_with_retry")

@@ -12,7 +12,11 @@ from pathlib import Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 
-from backend.constants.default_prompts import DEFAULT_EVALUATION_PROMPTS, SEED_AUTHORED_SET_ID
+from backend.constants.default_prompts import (
+    DEFAULT_CORE_VALUES,
+    DEFAULT_EVALUATION_PROMPTS,
+    SEED_AUTHORED_SET_ID,
+)
 from backend.core.config import get_settings
 from backend.core.database import get_session_factory, init_db
 from backend.gepa_integration.dataset_split import assign_splits
@@ -28,7 +32,8 @@ from backend.models.db_models import (
 )
 
 
-# Sample Resumes Text Content (25 Hired, 25 Rejected)
+# Sample Resumes Text Content (31 Hired, 31 Rejected)
+# Includes adversarial pairs designed to trip up keyword-heavy evaluators (for GEPA testing).
 RESUMES_DATA = [
     # ─── HIRED (Strong candidates matching JD & values) ─────────
     {
@@ -1583,7 +1588,384 @@ QA: Manual testing, test case design, regression testing, Jira, TestRail
 Limited: Selenium (workshop only), basic SQL queries for test data
 Not applicable: Python/FastAPI development, React, system architecture, production coding
 """
-    }
+    },
+
+    # ─── ADVERSARIAL: REJECTED but likely to score HIRED (false positives) ───
+    {
+        "candidate_name": "Jordan Pike",
+        "hiring_label": "Rejected",
+        "content": """
+JORDAN PIKE
+Senior Full Stack Engineer
+Email: jordan.pike@email.com | GitHub: github.com/jpike-tutorials
+
+SUMMARY
+Senior Full Stack Engineer passionate about customer obsession, innovation, and cross-functional collaboration. Expert in Python, FastAPI, React, scalable backend services, and taking full ownership from conceptual design to production deployment.
+
+EXPERIENCE
+Senior Full Stack Engineer | Freelance / Personal Projects (2024 - Present)
+- Led features end-to-end on tutorial clones: built a TODO app in React and a blog API in FastAPI following online courses (no users, no SLA, no on-call).
+- Innovated by copying architecture diagrams from conference talks into Notion; did not ship to production.
+- Collaborated closely with YouTube instructors and Discord study groups.
+- Worked closely with customer success concepts by reading SaaS blogs; no paid customers or production incidents handled.
+
+Lead Engineer | PreviousRole LLC (2022 - 2024)
+- Title promoted internally after 18 months as office IT coordinator; role remained helpdesk with occasional HTML tweaks.
+- Maintained high standard of technical excellence on printer drivers and VPN resets.
+- Mentored interns on resetting passwords; no code reviews on application repositories.
+
+EDUCATION
+Online certificates: React Basics, Python 101, "Full Stack" bootcamp (8 weeks, 2023)
+
+SKILLS
+Keywords: Python, FastAPI, React, PostgreSQL, AWS, Docker, CI/CD, ownership, innovation, customer obsession
+Reality: Tutorial-level exercises only; 2 years non-engineering IT; no team delivery of web products
+"""
+    },
+    {
+        "candidate_name": "Vanessa Ortiz",
+        "hiring_label": "Rejected",
+        "content": """
+VANESSA ORTIZ
+Senior Full Stack Developer
+Email: vanessa.ortiz@email.com | Portfolio: vanessaortiz.dev
+
+SUMMARY
+Results-driven engineer with 6 years of experience delivering scalable web applications, leading initiatives, and driving culture of excellence. Strong React and Python background.
+
+EXPERIENCE
+Senior Developer | BrightPages Agency (2020 - Present)
+- Improved page load speeds by 45% on WordPress marketing sites via caching plugins (not application architecture).
+- Designed scalable backend services using PHP and MySQL plugins; no FastAPI services in production.
+- Built rich interactive user interfaces with Elementor and jQuery; no professional React codebase.
+- Led features from design to deployment for client brochure sites (2-week campaigns, no tests, no monitoring).
+- Participated in reviews of Figma mockups; engineers on other accounts wrote code.
+
+Contract Developer | Side projects (2019 - 2020)
+- Completed FreeCodeCamp exercises and deployed a static portfolio to Netlify.
+
+EDUCATION
+B.A. in Marketing | UT Austin (2015 - 2019)
+
+SKILLS
+Listed: Python (scripts), FastAPI (tutorial hello-world), React (one weekend workshop), PostgreSQL (never in prod)
+Actual production: WordPress, PHP, Elementor, Google Analytics, client communication
+"""
+    },
+    {
+        "candidate_name": "Trevor Blaine",
+        "hiring_label": "Rejected",
+        "content": """
+TREVOR BLAINE
+Principal Full Stack Architect
+Email: trevor.blaine@email.com | LinkedIn: linkedin.com/in/tblaine
+
+SUMMARY
+Visionary technology leader with 12 years guiding enterprise transformation, platform strategy, and engineering excellence. Deep expertise in cloud-native architecture and cross-functional collaboration.
+
+EXPERIENCE
+Principal Architect | Enterprise Advisory Group (2019 - Present)
+- Authored 200+ slide decks on microservices, FastAPI, React modernization, and customer obsession for Fortune 500 clients.
+- Led architecture review boards; hands-on coding delegated to offshore vendor teams (candidate did not commit to repos).
+- Innovated governance frameworks and RACI matrices; zero production services owned personally.
+- Collaborated with customer success leadership on workshops; no bug fixes or feature delivery.
+
+Director of Engineering Strategy | BigConsult (2015 - 2019)
+- Managed budgets and vendor RFPs; background is MBA + business analyst, not software engineering.
+- "Mentored" teams via quarterly all-hands; no 1:1 code mentorship or PR reviews.
+
+EDUCATION
+MBA | Northwestern Kellogg (2013 - 2015)
+B.A. in Economics | UCLA (2009 - 2013)
+
+SKILLS
+Buzzwords: Python, FastAPI, React, AWS, Kubernetes, system design, ownership, innovation
+Evidence: No GitHub, no shipped products, no stack depth — consulting and documentation only
+"""
+    },
+    {
+        "candidate_name": "Mina Kapoor",
+        "hiring_label": "Rejected",
+        "content": """
+MINA KAPOR
+Full Stack Engineer
+Email: mina.kapoor@email.com | GitHub: github.com/minakapoor
+
+SUMMARY
+Innovative engineer specializing in Python/FastAPI backends and React frontends. Proven track record building scalable platforms and collaborating with cross-functional teams.
+
+EXPERIENCE
+Software Engineer | LearnStack Bootcamp Capstone (2025)
+- Built "Production-Grade" capstone: FastAPI todo API + React dashboard deployed to free tier Heroku (sleeping dyno, <50 users, course template).
+- Took complete ownership of capstone README and demo video for cohort presentation.
+- Maintained 80% test coverage on sample code copied from instructor starter repo.
+
+Teaching Assistant | LearnStack Bootcamp (2024 - 2025)
+- Graded student exercises; prior career was retail management (6 years), not software engineering.
+
+Retail Store Manager | TrendMart (2018 - 2024)
+- Led team of 12 associates, inventory, and schedules (unrelated to software).
+
+EDUCATION
+LearnStack Full Stack Bootcamp (2024 - 2025)
+B.A. in Sociology | Rutgers (2014 - 2018)
+
+SKILLS
+FastAPI/React: Bootcamp assignments only, 9 months total coding experience
+No professional SDE role, no on-call, no production incident response, no senior scope
+"""
+    },
+    {
+        "candidate_name": "Derek Fountain",
+        "hiring_label": "Rejected",
+        "content": """
+DEREK FOUNTAIN
+Senior Full Stack Engineer
+Email: derek.fountain@email.com
+
+SUMMARY
+Senior engineer with experience supporting mission-critical platforms for top-tier technology clients. Expert in Python, React, cloud, and customer-focused delivery.
+
+EXPERIENCE
+Senior Consultant | Apex Digital Partners (2017 - Present)
+- Supported Google, Amazon, and Meta initiatives as part of 40-person consulting bench (NDA — no verifiable product links).
+- Contributed to scalable backend services (attendance in standups; actual work: status reports in Confluence).
+- Collaborated closely with cross-functional teams by scheduling meetings and tracking Jira tickets filed by other developers.
+- Innovated new timesheet categorization templates; did not author FastAPI routes or React components in client repos.
+- Worked closely with customer success by forwarding emails to engineering leads.
+
+Technical Analyst | DataServe (2015 - 2017)
+- Wrote SQL queries for client dashboards in Tableau; no application development.
+
+EDUCATION
+B.S. in Information Systems | Penn State (2011 - 2015)
+
+SKILLS
+Claims: Python, FastAPI, React, AWS, PostgreSQL, ownership, CI/CD
+Verifiable depth: Excel, Jira, Confluence, PowerPoint; consulting tenure with vague individual impact
+"""
+    },
+    {
+        "candidate_name": "Lila Ghorbani",
+        "hiring_label": "Rejected",
+        "content": """
+LILA GHORBANI
+Senior Software Engineer
+Email: lila.ghorbani@email.com
+
+SUMMARY
+Customer-obsessed technologist pivoting into full stack engineering. Fast learner with leadership experience and passion for innovation and teamwork.
+
+EXPERIENCE
+Senior Software Engineer | QuickHire Placement (2025 - Present)
+- Staffing agency placed candidate at 3-month "trial" contract; title inflated by client HR template.
+- Built internal CRUD tool in Retool connected to Airtable (not Python/FastAPI or React product stack).
+- Led features by suggesting UI color changes; engineering manager rejected pull requests for quality issues.
+- Innovated spreadsheet trackers for recruiting pipeline.
+
+Enterprise Account Executive | CloudVendor Inc (2019 - 2024)
+- Exceeded quota selling SaaS subscriptions; no software development responsibilities.
+- Demoed products built by other engineers; cannot implement features independently.
+
+EDUCATION
+Sales Excellence Certification (2022)
+B.B.A. | Georgia State (2015 - 2019)
+
+SKILLS
+Resume keywords: Python, FastAPI, React (listed after 6-month bootcamp)
+Actual: 14 months total including sales career; no senior engineering depth or production ownership
+"""
+    },
+
+    # ─── ADVERSARIAL: HIRED but likely to score REJECTED (false negatives) ───
+    {
+        "candidate_name": "Noah Ramirez",
+        "hiring_label": "Hired",
+        "content": """
+NOAH RAMIREZ
+Platform Engineer
+Email: noah.r@email.com
+
+SUMMARY
+Engineer focused on backend systems and API design. Prefer small teams and direct work over flashy titles.
+
+EXPERIENCE
+Platform Engineer | LedgerFlow (2019 - Present)
+- Owns payment ingestion service (Python 3.11, FastAPI, asyncio workers, Postgres, Redis). Handles ~4k RPS peak; on-call rotation 1 week per month.
+- Replaced monolith checkout module with service boundaries; migration took 11 months with zero revenue-impacting outages (documented postmortems).
+- Wrote internal library for idempotent webhooks; adopted by two other teams without mandate.
+- Pair with frontend team on contract shapes; UI is Vue 3 + TypeScript (not React) but APIs power customer-facing product used by 2k businesses.
+- Review ~6 PRs/week; rarely present at all-hands.
+
+Software Engineer | Northline (2016 - 2019)
+- Maintained Django APIs; introduced pytest and type hints before team standard.
+
+EDUCATION
+B.S. Computer Science | UC Davis (2012 - 2016)
+
+SKILLS
+Strong: Python, FastAPI, async IO, PostgreSQL, Redis, Docker, AWS ECS, observability, API design
+UI: Vue/TypeScript in production (no React listed); otherwise matches senior backend/full-stack needs
+"""
+    },
+    {
+        "candidate_name": "Helen Okonkwo",
+        "hiring_label": "Hired",
+        "content": """
+HELEN OKONKWO
+Software Engineer
+Email: helen.okonkwo@email.com | GitHub: github.com/hokonkwo
+
+SUMMARY
+Engineer returning after caregiving leave. Earlier work on customer-facing web products.
+
+EXPERIENCE
+Career break | Family caregiving (2023 - 2024)
+- Full-time care; kept skills current with two small open-source PRs to FastAPI docs and a local React refactor of a nonprofit site.
+
+Software Engineer | Fieldnote (2018 - 2023)
+- Built scheduling product: FastAPI backend, React SPA, Postgres. Grew from 200 to 3k weekly active orgs.
+- Owned billing integration and dunning emails with customer support; reduced churn-related tickets.
+- Wrote tests before features when possible; coverage sat around 70% on core modules.
+- Worked with design on accessibility fixes (keyboard nav, focus traps).
+
+Junior Developer | Fieldnote (2016 - 2018)
+- Started on admin tools; promoted after shipping recurring events feature.
+
+EDUCATION
+B.S. Mathematics | University of Waterloo (2012 - 2016)
+
+SKILLS
+Python, FastAPI, React, TypeScript, PostgreSQL, pytest, GitHub Actions
+Note: Resume understates seniority (title never updated); gap may cause automated rejection without reading depth
+"""
+    },
+    {
+        "candidate_name": "Ian Volkov",
+        "hiring_label": "Hired",
+        "content": """
+IAN VOLKOV
+Contract Software Engineer (multiple clients)
+Email: ian.volkov@email.com
+
+SUMMARY
+Independent engineer. Short engagements; prefer shipping over resume polish.
+
+EXPERIENCE
+Contract | HealthSync (6 mo, 2025)
+- FastAPI + React telehealth queue: cut average wait display latency from 8s to 900ms by fixing N+1 queries and websocket fanout.
+
+Contract | CartPath (4 mo, 2024)
+- Checkout microservice hardening (Python/FastAPI), fraud rule engine hooks, feature flags.
+
+Contract | Ardent Labs (9 mo, 2023 - 2024)
+- Led migration of admin panel from jQuery to React 18; mentored one junior contractor on testing patterns.
+
+Contract | Various (2017 - 2023)
+- Six additional 2-5 month builds (marketplace, logistics, edtech). References available.
+- Common stack: FastAPI or Flask, React, Postgres, Docker.
+
+EDUCATION
+M.S. Computer Science | ETH Zurich (2015 - 2017)
+B.S. Computer Science | TU Munich (2011 - 2015)
+
+SKILLS
+Python, FastAPI, React, TypeScript, PostgreSQL, Docker, AWS
+Caveat: Job-hopper appearance; in reality deep repeated full-stack delivery across contracts
+"""
+    },
+    {
+        "candidate_name": "Priya Menon",
+        "hiring_label": "Hired",
+        "content": """
+PRIYA MENON
+Software Engineer II
+Email: priya.menon@email.com
+
+SUMMARY
+Backend-leaning engineer at same product company eight years. Title lagging scope.
+
+EXPERIENCE
+Software Engineer II | RouteStack (2017 - Present)
+- Same employer throughout; level band capped by HR ladder despite leading workstreams.
+- Designed routing engine v2 (FastAPI, Celery, React ops console). Reduced failed deliveries 18% in pilot regions.
+- On-call for payments API; wrote runbooks used by support.
+- Proposed caching layer for rate quotes (Redis); implemented with two peers over one quarter.
+- Customer success escalations: fixed 40+ Sev-2 bugs personally in 2024.
+- Interview loop mentor for last three hires.
+
+Software Engineer I | RouteStack (2017 - 2019)
+- Joined as new grad; shipped mobile-web status tracker (React) in first year.
+
+EDUCATION
+B.E. Computer Engineering | Anna University (2013 - 2017)
+
+SKILLS
+Python, FastAPI, React, Celery, Redis, PostgreSQL, AWS, pytest
+Misleading signal: "Engineer II" title hides 8+ years and staff-level ownership
+"""
+    },
+    {
+        "candidate_name": "Greta Lindstrom",
+        "hiring_label": "Hired",
+        "content": """
+GRETA LINDSTROM
+Research Engineer
+Email: greta.lindstrom@uni.edu
+
+SUMMARY
+Moved from applied research lab to product engineering. Publication-oriented wording; production experience is solid.
+
+EXPERIENCE
+Research Engineer | Product transition team, Atlas Imaging (2021 - Present)
+- Translated prototype inference pipeline into customer-facing FastAPI service with React review UI for clinicians.
+- Wrote validation suite and dataset versioning; FDA-adjacent documentation discipline (slow releases, high rigor).
+- Collaborated with hospital IT on SSO (SAML) integration; no marketing language on resume.
+- Mentored two PhD interns on software engineering practices (git, CI, code review).
+
+Graduate Researcher | MIT CSAIL (2016 - 2021)
+- Papers on distributed training systems; open-sourced scheduler used by 3 external labs.
+- Built internal React dashboard for experiment tracking (later productized at Atlas).
+
+EDUCATION
+Ph.D. Computer Science | MIT (2016 - 2021)
+B.S. Computer Science | KTH (2011 - 2015)
+
+SKILLS
+Python, FastAPI, React, TypeScript, PostgreSQL, Docker, experiment tooling
+Risk for LLM: academic tone, few business metrics, may underrate vs flashy SaaS resumes
+"""
+    },
+    {
+        "candidate_name": "Samuel Ayers",
+        "hiring_label": "Hired",
+        "content": """
+SAMUEL AYERS
+Reliability-focused Full Stack Engineer
+Email: samuel.ayers@email.com
+
+SUMMARY
+Engineer who ships boring, reliable software. Less emphasis on innovation buzzwords.
+
+EXPERIENCE
+Full Stack Engineer | PayBridge (2018 - Present)
+- Maintains merchant portal: React frontend, FastAPI services, legacy Flask strangler fig pattern.
+- Drove 99.95% uptime last 3 years via error budget practice, circuit breakers, and gradual rollouts.
+- Reduced p99 API latency 35% through query plans and connection pool tuning (no blog posts published).
+- Participates in code review daily; fixed security regression before external pen test.
+- Works with support queue twice monthly; patches production same day for payment-blocking defects.
+
+Developer | PayBridge (2015 - 2018)
+- Joined as intern; converted full-time.
+
+EDUCATION
+Associate → completed B.S. part-time | Oregon State Ecampus (2014 - 2018)
+
+SKILLS
+Python, FastAPI, Flask, React, PostgreSQL, Redis, AWS, observability, SRE practices
+May score low on "innovation" and "customer obsession" keywords despite strong hire for role
+"""
+    },
 ]
 
 
@@ -1647,33 +2029,10 @@ Key responsibilities:
         session.add(job)
         await session.flush()
 
-        print("Seeding core values...")
+        print("Seeding core values (intentionally weak for GEPA evolution demo)...")
         core_values = [
-            CoreValue(
-                job_id=job.id,
-                name="Technical Excellence",
-                description="We strive for robust system architecture, clean and maintainable code, comprehensive automated test coverage, and continuous learning."
-            ),
-            CoreValue(
-                job_id=job.id,
-                name="Ownership",
-                description="We take complete responsibility for outcomes, proactively solve problems without being asked, and follow projects through to delivery."
-            ),
-            CoreValue(
-                job_id=job.id,
-                name="Collaboration",
-                description="We mentor others, share knowledge openly, value diverse perspectives, and work cross-functionally to achieve shared goals."
-            ),
-            CoreValue(
-                job_id=job.id,
-                name="Innovation",
-                description="We continuously experiment, propose novel solutions, automate repetitive work, and seek to improve products and processes."
-            ),
-            CoreValue(
-                job_id=job.id,
-                name="Customer Obsession",
-                description="We align our decisions with user needs, respond quickly to user issues, and focus on delivering direct customer value."
-            ),
+            CoreValue(job_id=job.id, name=cv["name"], description=cv["description"])
+            for cv in DEFAULT_CORE_VALUES
         ]
         session.add_all(core_values)
 

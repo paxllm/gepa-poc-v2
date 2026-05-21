@@ -27,6 +27,8 @@ This proof-of-concept (POC) implements a self-learning hiring intelligence syste
    ```
    `LLM_MAX_PARALLEL=1` evaluates the five talent-lens prompts sequentially per resume, which avoids burst 429 errors during GEPA optimization. Increase `LLM_MAX_RPM` and `LLM_MAX_PARALLEL` only if your API tier allows higher throughput.
 
+   Optional demo mode — set `DEMO_MODE=true` to use the five wizard prompts verbatim as the GEPA seed candidate (no LLM call to expand them at optimization start). GEPA evaluation and reflection still use the LLM. Useful for demos, faster startup, or when you want full control over seed lens text.
+
 2. **Run Database Seed**:
    Run the seed script to create a sample job, core values, and mock candidate resumes:
    ```bash

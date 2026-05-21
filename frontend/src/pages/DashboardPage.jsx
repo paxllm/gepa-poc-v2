@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   XAxis,
@@ -15,6 +15,21 @@ import {
   getOptimizationStatus,
   getOptimizationResults,
 } from '../api/client';
+import { displayPromptText } from '../utils/promptDisplay';
+
+const SEED_AUTHORED_SET_ID = 'seed_authored';
+
+function promptsEqual(a, b) {
+  return displayPromptText(a) === displayPromptText(b);
+}
+
+function OutcomeBadge({ label, variant, title }) {
+  return (
+    <span className={`badge badge--${variant}`} title={title}>
+      {label}
+    </span>
+  );
+}
 
 export default function DashboardPage() {
   const location = useLocation();
@@ -116,6 +131,38 @@ export default function DashboardPage() {
       ? status.interim_best_prompts
       : null;
 
+  const seedByIndex = useMemo(() => {
+    const map = {};
+    (results?.all_prompts || [])
+      .filter(
+        (p) => p.generation === 'seed' && p.candidate_set_id !== SEED_AUTHORED_SET_ID
+      )
+      .forEach((p) => {
+        map[p.prompt_index] = p.prompt_text;
+      });
+    return map;
+  }, [results?.all_prompts]);
+
+  const interimMatchesSeed =
+    interimPrompts?.length > 0 &&
+    interimPrompts.every((p) =>
+      promptsEqual(p.prompt_text, seedByIndex[p.prompt_index] ?? p.prompt_text)
+    );
+
+  const currentBestByIndex = useMemo(() => {
+    const map = {};
+    if (interimPrompts) {
+      interimPrompts.forEach((p) => {
+        map[p.prompt_index] = p.prompt_text;
+      });
+    } else if (results?.best_prompts?.length) {
+      results.best_prompts.forEach((p) => {
+        map[p.prompt_index] = p.prompt_text;
+      });
+    }
+    return map;
+  }, [interimPrompts, results?.best_prompts]);
+
   const recentEvolutions = (results?.evolution_log || []).slice(-3).reverse();
 
   const trainAccFinal = isRunning
@@ -150,6 +197,7 @@ export default function DashboardPage() {
   const totalEvolutions = results?.evolution_log?.length || 0;
 
   const maxMetricCalls = status?.max_metric_calls ?? results?.max_metric_calls;
+  const hireThreshold = status?.hire_threshold ?? results?.hire_threshold;
   const totalMetricCalls = status?.total_metric_calls ?? 0;
   const progressPct =
     maxMetricCalls && maxMetricCalls > 0
@@ -174,6 +222,15 @@ export default function DashboardPage() {
     const s = secs % 60;
     return m > 0 ? `${m}m ${s}s` : `${s}s`;
   };
+
+  const liveEvalOutcomesRaw = isRunning ? (status?.live_eval_outcomes || []) : [];
+  const liveEvalOutcomes =
+    isRunning && status?.phase === 'optimizing'
+      ? liveEvalOutcomesRaw.filter((o) => !o.split || o.split === 'val')
+      : liveEvalOutcomesRaw;
+  const liveEvalScored = liveEvalOutcomes.filter((o) => !o.eval_error);
+  const liveEvalFailed = liveEvalOutcomes.length - liveEvalScored.length;
+  const liveEvalCorrect = liveEvalScored.filter((o) => o.is_correct).length;
 
   return (
     <div className="animate-fade-in">
@@ -234,6 +291,23 @@ export default function DashboardPage() {
             <div className="spinner" />
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 600 }}>Optimization in Progress</div>
+              {(maxMetricCalls != null || hireThreshold != null) && (
+                <div
+                  style={{
+                    fontSize: 'var(--font-size-xs)',
+                    color: 'var(--color-text-muted)',
+                    marginTop: 'var(--spacing-1)',
+                  }}
+                >
+                  {maxMetricCalls != null && (
+                    <>Max metric calls: <strong>{maxMetricCalls}</strong></>
+                  )}
+                  {maxMetricCalls != null && hireThreshold != null && ' · '}
+                  {hireThreshold != null && (
+                    <>Hire threshold: <strong>{hireThreshold}</strong></>
+                  )}
+                </div>
+              )}
               {phaseLabel && (
                 <div
                   style={{
@@ -254,7 +328,7 @@ export default function DashboardPage() {
                 )}
                 {status.total_metric_calls != null && maxMetricCalls != null && (
                   <>
-                    {status.total_metric_calls} / {maxMetricCalls} val evaluations used.
+                    {status.total_metric_calls} / {maxMetricCalls} metric calls used.
                     {' '}
                   </>
                 )}
@@ -297,6 +371,80 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {isRunning && liveEvalOutcomes.length > 0 && (
+        <div className="card mb-6">
+          <div className="card__header">
+            <h3 className="card__title">
+              {status?.phase === 'optimizing'
+                ? 'Live Validation Outcomes'
+                : 'Live Evaluation Outcomes'}
+            </h3>
+            <span className="card__subtitle">
+              {liveEvalCorrect} / {liveEvalScored.length} correct
+              {status?.phase === 'optimizing' ? ' on validation set' : ' so far'}
+              {liveEvalFailed > 0 && ` · ${liveEvalFailed} failed`}
+            </span>
+          </div>
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Candidate</th>
+                {status?.phase === 'optimizing' && <th>Split</th>}
+                <th>Predicted</th>
+                <th>Actual</th>
+                <th>Score</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...liveEvalOutcomes].reverse().map((outcome, idx) => (
+                <tr key={`${outcome.resume_id ?? 'unknown'}-${liveEvalOutcomes.length - idx}`}>
+                  <td style={{ color: 'var(--color-text-muted)', fontSize: 'var(--font-size-xs)' }}>
+                    {liveEvalOutcomes.length - idx}
+                  </td>
+                  <td>{outcome.candidate_name || `Resume ${outcome.resume_id ?? '?'}`}</td>
+                  {status?.phase === 'optimizing' && (
+                    <td style={{ fontSize: 'var(--font-size-xs)', textTransform: 'capitalize' }}>
+                      {outcome.split || '—'}
+                    </td>
+                  )}
+                  <td>
+                    <OutcomeBadge
+                      label={outcome.prediction}
+                      variant={outcome.prediction === 'Hired' ? 'success' : 'danger'}
+                    />
+                  </td>
+                  <td>
+                    <OutcomeBadge
+                      label={outcome.actual_label}
+                      variant={outcome.actual_label === 'Hired' ? 'success' : 'danger'}
+                    />
+                  </td>
+                  <td style={{ fontSize: 'var(--font-size-sm)' }}>
+                    {outcome.eval_error
+                      ? '—'
+                      : outcome.aggregate_score != null
+                        ? outcome.aggregate_score.toFixed(2)
+                        : '—'}
+                  </td>
+                  <td>
+                    {outcome.eval_error ? (
+                      <OutcomeBadge label="Error" variant="warning" title={outcome.eval_error} />
+                    ) : (
+                      <OutcomeBadge
+                        label={outcome.is_correct ? 'Correct' : 'Wrong'}
+                        variant={outcome.is_correct ? 'success' : 'danger'}
+                      />
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 
@@ -349,8 +497,21 @@ export default function DashboardPage() {
         <div className="card mb-6">
           <div className="card__header">
             <h3 className="card__title">Current Best Prompts</h3>
-            <span className="badge badge--info">Interim</span>
+            <span className={`badge ${interimMatchesSeed && totalEvolutions > 0 ? 'badge--warning' : 'badge--info'}`}>
+              {interimMatchesSeed && totalEvolutions > 0 ? 'Seed (still best on val)' : 'Interim'}
+            </span>
           </div>
+          {interimMatchesSeed && totalEvolutions > 0 && (
+            <p
+              style={{
+                color: 'var(--color-text-muted)',
+                fontSize: 'var(--font-size-sm)',
+                marginBottom: 'var(--spacing-4)',
+              }}
+            >
+              Mutations are being tested on training data; promotion requires beating seed on validation.
+            </p>
+          )}
           {interimPrompts.map((lens) => (
             <div
               key={lens.prompt_index}
@@ -374,20 +535,27 @@ export default function DashboardPage() {
                   marginTop: 'var(--spacing-2)',
                 }}
               >
-                {lens.prompt_text}
+                {displayPromptText(lens.prompt_text)}
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {isRunning && recentEvolutions.length > 0 && (
+      {recentEvolutions.length > 0 && (
         <div className="card mb-6">
           <div className="card__header">
             <h3 className="card__title">Recent Prompt Mutations</h3>
-            <span className="card__subtitle">Latest changes as GEPA runs</span>
+            <span className="card__subtitle">
+              {isRunning ? 'Latest changes as GEPA runs' : 'Mutations from the last run'}
+            </span>
           </div>
-          {recentEvolutions.map((entry) => (
+          {recentEvolutions.map((entry) => {
+            const currentBest = currentBestByIndex[entry.prompt_index];
+            const isPromoted =
+              entry.promoted ??
+              (currentBest != null && promptsEqual(entry.evolved_prompt, currentBest));
+            return (
             <div
               key={entry.id}
               style={{
@@ -399,6 +567,9 @@ export default function DashboardPage() {
               <div className="flex gap-2 mb-2">
                 <span className="badge badge--warning">Iteration {entry.iteration}</span>
                 <span className="badge badge--info">Prompt {entry.prompt_index}</span>
+                <span className={`badge ${isPromoted ? 'badge--success' : 'badge--secondary'}`}>
+                  {isPromoted ? 'Promoted' : 'Explored — not yet promoted'}
+                </span>
               </div>
               <div
                 style={{
@@ -408,10 +579,11 @@ export default function DashboardPage() {
                   lineHeight: 1.6,
                 }}
               >
-                {entry.evolved_prompt}
+                {displayPromptText(entry.evolved_prompt)}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -462,7 +634,15 @@ export default function DashboardPage() {
         {isRunning && (
           <>
             <div className="metric-card">
-              <div className="metric-card__label">Val Evaluations</div>
+              <div className="metric-card__label">Max Metric Calls</div>
+              <div className="metric-card__value">{maxMetricCalls ?? '—'}</div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-card__label">Hire Threshold</div>
+              <div className="metric-card__value">{hireThreshold ?? '—'}</div>
+            </div>
+            <div className="metric-card">
+              <div className="metric-card__label">Metric Calls</div>
               <div className="metric-card__value">
                 {maxMetricCalls != null
                   ? `${totalMetricCalls} / ${maxMetricCalls}`
@@ -585,7 +765,7 @@ export default function DashboardPage() {
                   lineHeight: 1.7,
                 }}
               >
-                {lens.prompt_text}
+                {displayPromptText(lens.prompt_text)}
               </div>
             </div>
           ))}

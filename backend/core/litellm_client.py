@@ -1,7 +1,7 @@
 """
 Rate-limited LiteLLM client for NVIDIA NIM.
 
-Provides a global RPM throttle and retry-with-backoff on 429 / RateLimitError.
+Provides a global RPM throttle and retry-with-backoff on 429 / rate limits and timeouts.
 """
 
 from __future__ import annotations
@@ -12,12 +12,17 @@ import time
 from typing import Any
 
 import litellm
-from litellm.exceptions import RateLimitError
+from litellm.exceptions import RateLimitError, Timeout
 
 from backend.core.config import get_settings
 
 _lock = threading.Lock()
 _request_timestamps: list[float] = []
+
+
+def get_llm_timeout() -> int:
+    """Return configured per-request LLM timeout in seconds."""
+    return get_settings().llm_timeout_seconds
 
 
 def _is_rate_limit_error(exc: BaseException) -> bool:
@@ -28,6 +33,20 @@ def _is_rate_limit_error(exc: BaseException) -> bool:
         return True
     msg = str(exc).lower()
     return "429" in msg or "rate limit" in msg or "too many requests" in msg
+
+
+def _is_timeout_error(exc: BaseException) -> bool:
+    if isinstance(exc, Timeout):
+        return True
+    name = type(exc).__name__.lower()
+    if "timeout" in name:
+        return True
+    msg = str(exc).lower()
+    return "timed out" in msg or "timeout" in msg
+
+
+def _is_retriable_error(exc: BaseException) -> bool:
+    return _is_rate_limit_error(exc) or _is_timeout_error(exc)
 
 
 def _prune_old_timestamps(now: float, window_seconds: float) -> None:
@@ -79,10 +98,12 @@ def completion_with_retry(
     **kwargs: Any,
 ) -> Any:
     """
-    Call litellm.completion with RPM throttling and exponential backoff on 429.
+    Call litellm.completion with RPM throttling and exponential backoff on 429/timeouts.
     """
     settings = get_settings()
     max_retries = settings.llm_retry_max
+    if timeout is None:
+        timeout = get_llm_timeout()
     last_exc: BaseException | None = None
 
     for attempt in range(max_retries):
@@ -98,7 +119,7 @@ def completion_with_retry(
             return litellm.completion(**call_kwargs)
         except Exception as exc:
             last_exc = exc
-            if not _is_rate_limit_error(exc) or attempt >= max_retries - 1:
+            if not _is_retriable_error(exc) or attempt >= max_retries - 1:
                 raise
             wait = (2 ** attempt) + random.uniform(0.1, 0.5)
             time.sleep(wait)
@@ -108,8 +129,10 @@ def completion_with_retry(
     raise RuntimeError("completion_with_retry failed without an exception")
 
 
-def make_reflection_lm(model: str, *, timeout: int | float | None = 120):
+def make_reflection_lm(model: str, *, timeout: int | float | None = None):
     """Build a GEPA-compatible reflection_lm callable using the shared wrapper."""
+    if timeout is None:
+        timeout = get_llm_timeout()
 
     def _reflection_lm(prompt: str | list[dict[str, str]]) -> str:
         if isinstance(prompt, str):

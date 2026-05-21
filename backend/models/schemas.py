@@ -170,6 +170,7 @@ class PromptEvolutionResponse(BaseModel):
     original_prompt: str | None = None
     evolved_prompt: str
     reflection_reasoning: str | None = None
+    promoted: bool = False
 
     model_config = {"from_attributes": True}
 
@@ -190,12 +191,24 @@ class InterimPromptResponse(BaseModel):
     prompt_text: str
 
 
+class LiveEvalOutcomeResponse(BaseModel):
+    resume_id: int | None = None
+    candidate_name: str | None = None
+    prediction: str
+    actual_label: str
+    aggregate_score: float | None = None
+    is_correct: bool
+    eval_error: str | None = None
+    split: str | None = None
+
+
 class OptimizationStatusResponse(BaseModel):
     status: str  # idle / running / completed / error
     phase: str | None = None  # generating_seed | seed_evaluation | optimizing (while running)
     seed_eval_completed: int | None = None
     seed_eval_total: int | None = None
     max_metric_calls: int | None = None
+    hire_threshold: float | None = None
     current_iteration: int | None = None
     total_metric_calls: int | None = None
     best_accuracy: float | None = None
@@ -207,6 +220,7 @@ class OptimizationStatusResponse(BaseModel):
     split_summary: SplitSummaryResponse | None = None
     metrics_history: list[IterationMetricsResponse] | None = None
     interim_best_prompts: list[InterimPromptResponse] | None = None
+    live_eval_outcomes: list[LiveEvalOutcomeResponse] | None = None
 
 
 class OptimizationResultResponse(BaseModel):

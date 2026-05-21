@@ -12,7 +12,7 @@ Each evaluation:
 import json
 from typing import Any
 
-from backend.core.litellm_client import completion_with_retry
+from backend.core.litellm_client import completion_with_retry, get_llm_timeout
 from gepa.adapters.default_adapter.default_adapter import EvaluationResult
 
 from backend.core.config import get_settings
@@ -183,7 +183,7 @@ def evaluate_candidate_on_dataset(
             completion = completion_with_retry(
                 model=task_lm_model,
                 messages=messages,
-                timeout=120,
+                timeout=get_llm_timeout(),
             )
             response_text = completion.choices[0].message.content or ""
             scores.append(_parse_prompt_score(response_text, hire_threshold))

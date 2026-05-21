@@ -3,6 +3,7 @@ Optimization endpoints: start, status, and results.
 """
 
 import asyncio
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
@@ -11,8 +12,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.config import get_settings
 from backend.core.database import get_db
-from backend.gepa_integration.runner import get_run_status, run_optimization
-from backend.gepa_integration.prompt_templates import normalize_prompts
+from backend.gepa_integration.runner import (
+    get_run_status,
+    init_run_status,
+    resolve_optimization_params,
+    run_optimization,
+)
+from backend.gepa_integration.prompt_templates import extract_user_lens, normalize_prompts
 from backend.models.db_models import (
     CandidatePrediction,
     IterationMetrics,
@@ -24,6 +30,7 @@ from backend.models.db_models import (
 from backend.models.schemas import (
     InterimPromptResponse,
     IterationMetricsResponse,
+    LiveEvalOutcomeResponse,
     OptimizationRequest,
     OptimizationStatusResponse,
     PromptEvolutionResponse,
@@ -32,6 +39,55 @@ from backend.models.schemas import (
 )
 
 router = APIRouter(prefix="/api/jobs/{job_id}", tags=["optimization"])
+
+
+def _normalize_lens_text(text: str | None) -> str:
+    if not text:
+        return ""
+    return extract_user_lens(text).strip()
+
+
+def _current_best_by_index(
+    *,
+    status: dict[str, Any],
+    best_lenses: list[TalentLens],
+    is_running: bool,
+) -> dict[int, str]:
+    best_by_index: dict[int, str] = {}
+    if is_running:
+        for prompt in status.get("interim_best_prompts") or []:
+            best_by_index[int(prompt["prompt_index"])] = _normalize_lens_text(
+                prompt["prompt_text"]
+            )
+    else:
+        for lens in best_lenses:
+            best_by_index[lens.prompt_index] = _normalize_lens_text(lens.prompt_text)
+    return best_by_index
+
+
+def _build_evolution_responses(
+    evolution_log: list[PromptEvolutionLog],
+    best_by_index: dict[int, str],
+) -> list[PromptEvolutionResponse]:
+    responses: list[PromptEvolutionResponse] = []
+    for entry in evolution_log:
+        evolved_norm = _normalize_lens_text(entry.evolved_prompt)
+        current_best = best_by_index.get(entry.prompt_index, "")
+        promoted = bool(current_best and evolved_norm == current_best)
+        responses.append(
+            PromptEvolutionResponse(
+                id=entry.id,
+                parent_candidate_set_id=entry.parent_candidate_set_id,
+                child_candidate_set_id=entry.child_candidate_set_id,
+                iteration=entry.iteration,
+                prompt_index=entry.prompt_index,
+                original_prompt=entry.original_prompt,
+                evolved_prompt=entry.evolved_prompt,
+                reflection_reasoning=entry.reflection_reasoning,
+                promoted=promoted,
+            )
+        )
+    return responses
 
 
 def _run_optimization_sync(
@@ -126,19 +182,34 @@ async def start_optimization(
     prompts = normalize_prompts([p.prompt_text for p in request.prompts.prompts])
     split_summary = await _get_split_summary(db, job_id)
 
+    max_metric_calls, hire_threshold, early_stop_patience = resolve_optimization_params(
+        request.max_metric_calls,
+        request.hire_threshold,
+        request.early_stop_patience,
+    )
+    run_set_id = f"run_{uuid.uuid4().hex[:8]}"
+    init_run_status(
+        job_id,
+        run_set_id=run_set_id,
+        max_metric_calls=max_metric_calls,
+        hire_threshold=hire_threshold,
+    )
+
     background_tasks.add_task(
         _run_optimization_sync,
         job_id=job_id,
         prompts=prompts,
-        max_metric_calls=request.max_metric_calls,
-        hire_threshold=request.hire_threshold,
-        early_stop_patience=request.early_stop_patience,
+        max_metric_calls=max_metric_calls,
+        hire_threshold=hire_threshold,
+        early_stop_patience=early_stop_patience,
         force_resplit=request.force_resplit,
     )
 
     return OptimizationStatusResponse(
         status="running",
         current_iteration=0,
+        max_metric_calls=max_metric_calls,
+        hire_threshold=hire_threshold,
         split_summary=split_summary,
     )
 
@@ -182,12 +253,20 @@ async def get_optimization_status(job_id: int, db: AsyncSession = Depends(get_db
         else None
     )
 
+    live_outcomes_raw = status.get("live_eval_outcomes")
+    live_eval_outcomes = (
+        [LiveEvalOutcomeResponse.model_validate(o) for o in live_outcomes_raw]
+        if live_outcomes_raw
+        else None
+    )
+
     return OptimizationStatusResponse(
         status=status.get("status", "idle"),
         phase=status.get("phase"),
         seed_eval_completed=status.get("seed_eval_completed"),
         seed_eval_total=status.get("seed_eval_total"),
         max_metric_calls=status.get("max_metric_calls"),
+        hire_threshold=status.get("hire_threshold"),
         current_iteration=status.get("current_iteration"),
         total_metric_calls=status.get("total_metric_calls"),
         best_accuracy=status.get("best_accuracy"),
@@ -203,6 +282,7 @@ async def get_optimization_status(job_id: int, db: AsyncSession = Depends(get_db
             else None
         ),
         interim_best_prompts=interim_best_prompts,
+        live_eval_outcomes=live_eval_outcomes,
     )
 
 
@@ -219,8 +299,12 @@ async def get_optimization_results(
 
     lens_result = await db.execute(
         select(TalentLens)
-        .where(TalentLens.job_id == job_id, TalentLens.generation == "evolved")
-        .order_by(TalentLens.created_at.desc())
+        .where(
+            TalentLens.job_id == job_id,
+            TalentLens.generation == "evolved",
+            TalentLens.is_active.is_(True),
+        )
+        .order_by(TalentLens.prompt_index)
     )
     best_lenses = list(lens_result.scalars().all())
     if is_running:
@@ -252,6 +336,12 @@ async def get_optimization_results(
         .order_by(PromptEvolutionLog.iteration)
     )
     evolution_log = evo_result.scalars().all()
+    best_by_index = _current_best_by_index(
+        status=status,
+        best_lenses=best_lenses,
+        is_running=is_running,
+    )
+    evolution_responses = _build_evolution_responses(evolution_log, best_by_index)
 
     predictions_result = await db.execute(
         select(CandidatePrediction)
@@ -299,6 +389,7 @@ async def get_optimization_results(
         "seed_eval_completed": status.get("seed_eval_completed"),
         "seed_eval_total": status.get("seed_eval_total"),
         "max_metric_calls": status.get("max_metric_calls"),
+        "hire_threshold": status.get("hire_threshold"),
         "best_candidate_set_id": status.get("best_candidate_set_id"),
         "best_accuracy": status.get("best_accuracy"),
         "stop_reason": stop_reason,
@@ -317,9 +408,7 @@ async def get_optimization_results(
             if final_metrics
             else None
         ),
-        "evolution_log": [
-            PromptEvolutionResponse.model_validate(e) for e in evolution_log
-        ],
+        "evolution_log": evolution_responses,
         "test_predictions": [
             {
                 "id": p.id,
@@ -349,9 +438,29 @@ async def get_metrics(job_id: int, db: AsyncSession = Depends(get_db)):
 @router.get("/evolution", response_model=list[PromptEvolutionResponse])
 async def get_evolution_log(job_id: int, db: AsyncSession = Depends(get_db)):
     """Get prompt evolution history for a job."""
+    status = get_run_status(job_id)
+    is_running = status.get("status") == "running"
+
+    lens_result = await db.execute(
+        select(TalentLens)
+        .where(
+            TalentLens.job_id == job_id,
+            TalentLens.generation == "evolved",
+            TalentLens.is_active.is_(True),
+        )
+        .order_by(TalentLens.prompt_index)
+    )
+    best_lenses = list(lens_result.scalars().all()) if not is_running else []
+
     result = await db.execute(
         select(PromptEvolutionLog)
         .where(PromptEvolutionLog.job_id == job_id)
         .order_by(PromptEvolutionLog.iteration)
     )
-    return result.scalars().all()
+    evolution_log = result.scalars().all()
+    best_by_index = _current_best_by_index(
+        status=status,
+        best_lenses=best_lenses,
+        is_running=is_running,
+    )
+    return _build_evolution_responses(evolution_log, best_by_index)

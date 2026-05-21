@@ -25,5 +25,6 @@ export function extractUserLens(text) {
 }
 
 export function displayPromptText(text) {
+  if (text == null || text === '') return '';
   return extractUserLens(text);
 }

@@ -11,6 +11,7 @@ import {
   listResumes,
   listSeedPrompts,
   saveSeedPrompts,
+  getAppConfig,
 } from '../api/client';
 import {
   DEFAULT_JOB_TITLE,
@@ -52,9 +53,21 @@ export default function SetupPage() {
   const [prompts, setPrompts] = useState([...DEFAULT_EVALUATION_PROMPTS]);
   const promptsTouchedRef = useRef(false);
 
-  // Step 5: Config
-  const [maxMetricCalls, setMaxMetricCalls] = useState(150);
-  const [hireThreshold, setHireThreshold] = useState(3.0);
+  // Step 5: Config (defaults loaded from backend / .env)
+  const [maxMetricCalls, setMaxMetricCalls] = useState(null);
+  const [hireThreshold, setHireThreshold] = useState(null);
+
+  useEffect(() => {
+    getAppConfig()
+      .then((res) => {
+        setMaxMetricCalls(res.data.gepa_max_metric_calls);
+        setHireThreshold(res.data.hire_threshold);
+      })
+      .catch(() => {
+        setMaxMetricCalls(150);
+        setHireThreshold(3.0);
+      });
+  }, []);
 
   useEffect(() => {
     listJobs()
@@ -251,6 +264,10 @@ export default function SetupPage() {
   const handleLaunch = async () => {
     if (prompts.some((p) => !p.trim())) {
       setError('Please fill in all 5 prompts.');
+      return;
+    }
+    if (maxMetricCalls == null || hireThreshold == null) {
+      setError('Optimization settings are still loading.');
       return;
     }
     setLoading(true);
@@ -632,8 +649,13 @@ export default function SetupPage() {
                 id="input-max-calls"
                 className="form-input"
                 type="number"
-                value={maxMetricCalls}
-                onChange={(e) => setMaxMetricCalls(parseInt(e.target.value) || 150)}
+                value={maxMetricCalls ?? ''}
+                onChange={(e) => {
+                  const parsed = parseInt(e.target.value, 10);
+                  if (!Number.isNaN(parsed)) {
+                    setMaxMetricCalls(parsed);
+                  }
+                }}
                 min={10}
                 max={500}
               />
@@ -647,8 +669,13 @@ export default function SetupPage() {
                 id="input-threshold"
                 className="form-input"
                 type="number"
-                value={hireThreshold}
-                onChange={(e) => setHireThreshold(parseFloat(e.target.value) || 3.0)}
+                value={hireThreshold ?? ''}
+                onChange={(e) => {
+                  const parsed = parseFloat(e.target.value);
+                  if (!Number.isNaN(parsed)) {
+                    setHireThreshold(parsed);
+                  }
+                }}
                 min={1}
                 max={5}
                 step={0.5}
@@ -716,7 +743,7 @@ export default function SetupPage() {
               id="btn-launch"
               className="btn btn--primary btn--lg"
               onClick={handleLaunch}
-              disabled={loading}
+              disabled={loading || maxMetricCalls == null || hireThreshold == null}
             >
               {loading ? (
                 <>

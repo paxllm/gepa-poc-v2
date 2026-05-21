@@ -16,7 +16,7 @@ from typing import Any
 
 import gepa
 from gepa import NoImprovementStopper
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.config import get_settings
@@ -45,6 +45,43 @@ _run_status: dict[int, dict[str, Any]] = {}
 def get_run_status(job_id: int) -> dict[str, Any]:
     """Get the current status of an optimization run."""
     return _run_status.get(job_id, {"status": "idle"})
+
+
+def resolve_optimization_params(
+    max_metric_calls: int | None,
+    hire_threshold: float | None,
+    early_stop_patience: int | None,
+) -> tuple[int, float, int]:
+    """Apply server defaults only when a parameter was omitted (null)."""
+    settings = get_settings()
+    if max_metric_calls is None:
+        max_metric_calls = settings.gepa_max_metric_calls
+    if hire_threshold is None:
+        hire_threshold = settings.hire_threshold
+    if early_stop_patience is None:
+        early_stop_patience = settings.early_stop_patience
+    return max_metric_calls, hire_threshold, early_stop_patience
+
+
+def init_run_status(
+    job_id: int,
+    *,
+    run_set_id: str,
+    max_metric_calls: int,
+    hire_threshold: float,
+) -> None:
+    """Mark a job as running with resolved config before the background task starts."""
+    _run_status[job_id] = {
+        "status": "running",
+        "current_iteration": 0,
+        "best_candidate_set_id": run_set_id,
+        "run_candidate_set_id": run_set_id,
+        "total_metric_calls": 0,
+        "max_metric_calls": max_metric_calls,
+        "hire_threshold": hire_threshold,
+        "phase": "starting",
+        "live_eval_outcomes": [],
+    }
 
 
 class _ReasonTrackingStopper:
@@ -122,6 +159,7 @@ async def build_dataset(
                 "core_values_json": json.dumps(core_values),
                 "candidate_name": resume.candidate_name,
                 "resume_id": str(resume.id),
+                "dataset_split": split,
             },
             "answer": resume.hiring_label,
         })
@@ -139,30 +177,35 @@ async def run_optimization(
 ) -> dict[str, Any]:
     """Run the full GEPA optimization loop with held-out validation and early stopping."""
     settings = get_settings()
-    max_metric_calls = max_metric_calls or settings.gepa_max_metric_calls
-    hire_threshold = hire_threshold or settings.hire_threshold
-    early_stop_patience = (
-        early_stop_patience
-        if early_stop_patience is not None
-        else settings.early_stop_patience
+    max_metric_calls, hire_threshold, early_stop_patience = resolve_optimization_params(
+        max_metric_calls, hire_threshold, early_stop_patience
     )
 
     factory = get_session_factory()
-    run_set_id = f"run_{uuid.uuid4().hex[:8]}"
+    existing = _run_status.get(job_id, {})
+    if existing.get("status") == "running" and existing.get("run_candidate_set_id"):
+        run_set_id = existing["run_candidate_set_id"]
+    else:
+        run_set_id = f"run_{uuid.uuid4().hex[:8]}"
+        init_run_status(
+            job_id,
+            run_set_id=run_set_id,
+            max_metric_calls=max_metric_calls,
+            hire_threshold=hire_threshold,
+        )
     run_dir = str(settings.data_dir / "gepa_runs" / f"job_{job_id}")
-
-    _run_status[job_id] = {
-        "status": "running",
-        "current_iteration": 0,
-        "best_candidate_set_id": run_set_id,
-        "run_candidate_set_id": run_set_id,
-        "total_metric_calls": 0,
-        "max_metric_calls": max_metric_calls,
-        "phase": "starting",
-    }
 
     try:
         async with factory() as session:
+            await session.execute(
+                update(TalentLens)
+                .where(
+                    TalentLens.job_id == job_id,
+                    TalentLens.generation == "evolved",
+                    TalentLens.is_active.is_(True),
+                )
+                .values(is_active=False)
+            )
             await session.execute(
                 delete(IterationMetrics).where(
                     IterationMetrics.job_id == job_id,
@@ -314,41 +357,31 @@ async def run_optimization(
                     )
                 )
 
-            if hasattr(result, "history") and result.history:
-                for step_idx, step in enumerate(result.history):
-                    if hasattr(step, "candidate") and hasattr(step, "parent_candidate"):
-                        for key in step.candidate:
-                            parent = step.parent_candidate or {}
-                            if step.candidate[key] != parent.get(key, ""):
-                                idx = int(key.split("_")[1])
-                                session.add(
-                                    PromptEvolutionLog(
-                                        job_id=job_id,
-                                        parent_candidate_set_id=seed_set_id,
-                                        child_candidate_set_id=best_set_id,
-                                        iteration=step_idx,
-                                        prompt_index=idx,
-                                        original_prompt=parent.get(key, ""),
-                                        evolved_prompt=step.candidate[key],
-                                        reflection_reasoning=getattr(step, "reflection", None),
-                                    )
-                                )
-
-            eval_summary = await run_final_evaluation(
-                session,
-                job_id=job_id,
-                candidate_set_id=best_set_id,
-                best_candidate=best_candidate,
-                trainset=trainset,
-                valset=valset,
-                testset=testset,
-                hire_threshold=hire_threshold,
-                task_lm_model=task_lm_model,
-                job_description=job.description,
-                core_values=core_values,
-                stop_reason=stop_reason,
-                final_iteration=final_iteration,
-            )
+            try:
+                eval_summary = await run_final_evaluation(
+                    session,
+                    job_id=job_id,
+                    candidate_set_id=best_set_id,
+                    best_candidate=best_candidate,
+                    trainset=trainset,
+                    valset=valset,
+                    testset=testset,
+                    hire_threshold=hire_threshold,
+                    task_lm_model=task_lm_model,
+                    job_description=job.description,
+                    core_values=core_values,
+                    stop_reason=stop_reason,
+                    final_iteration=final_iteration,
+                )
+            except Exception as eval_exc:
+                eval_summary = {
+                    "train_accuracy": None,
+                    "val_accuracy": best_score,
+                    "test_accuracy": None,
+                    "overfit_gap": None,
+                    "stop_reason": stop_reason,
+                    "final_eval_error": str(eval_exc),
+                }
             await session.commit()
 
         _run_status[job_id] = {
@@ -358,10 +391,13 @@ async def run_optimization(
             "seed_candidate_set_id": seed_set_id,
             "split_summary": _run_status[job_id].get("split_summary"),
             "stop_reason": stop_reason,
-            "overfit_gap": eval_summary["overfit_gap"],
-            "train_accuracy": eval_summary["train_accuracy"],
-            "test_accuracy": eval_summary["test_accuracy"],
+            "overfit_gap": eval_summary.get("overfit_gap"),
+            "train_accuracy": eval_summary.get("train_accuracy"),
+            "test_accuracy": eval_summary.get("test_accuracy"),
             "total_metric_calls": result.total_metric_calls,
+            "max_metric_calls": max_metric_calls,
+            "hire_threshold": hire_threshold,
+            "final_eval_error": eval_summary.get("final_eval_error"),
         }
 
         return {

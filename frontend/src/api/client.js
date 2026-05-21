@@ -11,6 +11,8 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+export const getAppConfig = () => api.get('/config');
+
 // ─── Jobs ──────────────────────────────────────────────────────
 
 export const createJob = (title, description) =>
@@ -64,8 +66,8 @@ export const startOptimization = (jobId, prompts, maxMetricCalls, hireThreshold,
     prompts: {
       prompts: prompts.map((p) => ({ prompt_text: p })),
     },
-    max_metric_calls: maxMetricCalls || null,
-    hire_threshold: hireThreshold || null,
+    max_metric_calls: maxMetricCalls ?? null,
+    hire_threshold: hireThreshold ?? null,
     early_stop_patience: earlyStopPatience ?? null,
     force_resplit: forceResplit ?? false,
   });
