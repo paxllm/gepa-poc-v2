@@ -1,0 +1,23 @@
+Alice Chen
+Data Scientist | ML Engineer | 8 years experience
+
+SUMMARY
+Experienced data scientist with strong background in Python, TensorFlow, and statistical analysis.
+Passionate about building ML models and working with large datasets.
+
+EXPERIENCE
+- Lead Data Scientist at Tech Corp (3 years): Built recommendation engine serving 50M users
+- Data Scientist at StartupXYZ (2 years): Developed fraud detection models with 99% accuracy
+- Junior Data Scientist at BigTech (3 years): Worked on NLP projects
+
+SKILLS
+Python, Pandas, NumPy, TensorFlow, PyTorch, SQL, Spark, AWS, Docker, Kubernetes
+Statistics, A/B Testing, Feature Engineering, Model Deployment
+
+EDUCATION
+MS Computer Science, Top University (2015)
+BS Mathematics, Good State University (2013)
+
+AWARDS
+- Best ML Paper 2022
+- Top Performer 3 years running

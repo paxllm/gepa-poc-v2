@@ -1,0 +1,23 @@
+Noah Kim
+Open Source Developer | Backend Engineer | 5 years
+
+SUMMARY
+Maintainer of two widely-used open-source libraries. Strong systems intuition
+developed through running production workloads under global OSS scrutiny.
+
+EXPERIENCE
+- Freelance consultant (3 years): Infrastructure and backend work for early-stage startups
+- Software Engineer at TechBoutique (2 years): API design and platform work
+
+OPEN SOURCE
+- fastqueue (Node.js): 12,000+ GitHub stars, 200k+ weekly downloads
+- dbmigrate-cli: 4,000+ stars, used by 500+ companies
+Active contributor to several large projects (PRs merged into Node.js core, Prisma, tRPC)
+
+SKILLS
+Node.js, TypeScript, Rust, Go
+Postgres, Redis, SQLite, RabbitMQ
+Docker, CI/CD, monitoring, testing
+
+EDUCATION
+No degree. High school diploma + 5 years of intense self-teaching.

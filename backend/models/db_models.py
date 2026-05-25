@@ -20,6 +20,12 @@ class Job(Base):
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, server_default=func.now()
     )
+    # Set when run_optimization completes successfully; drives the
+    # "decisions since last train" auto-retrain trigger.
+    last_optimized_at: Mapped[Optional[datetime.datetime]] = mapped_column(
+        DateTime, nullable=True
+    )
+    auto_retrain_threshold: Mapped[int] = mapped_column(Integer, default=5)
 
     # Relationships
     core_values: Mapped[list["CoreValue"]] = relationship(back_populates="job", cascade="all, delete-orphan")
@@ -49,7 +55,15 @@ class Resume(Base):
     file_path: Mapped[str] = mapped_column(String(512), nullable=False)
     file_type: Mapped[str] = mapped_column(String(10), nullable=False)  # pdf, docx, txt
     parsed_text: Mapped[str] = mapped_column(Text, nullable=True)
-    hiring_label: Mapped[str] = mapped_column(String(20), nullable=False)  # Hired / Rejected
+    # None for `pending_decision` resumes that have been scored but not yet decided.
+    hiring_label: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    # pending_decision until a hiring manager records a decision, then decided.
+    status: Mapped[str] = mapped_column(String(20), default="decided", nullable=False)
+    # historical = bulk-uploaded with a label; live = scored via /candidates/score.
+    entry_source: Mapped[str] = mapped_column(String(20), default="historical", nullable=False)
+    decision_made_at: Mapped[Optional[datetime.datetime]] = mapped_column(
+        DateTime, nullable=True
+    )
     # train / val / test — assigned before optimization; None until first split
     dataset_split: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
 
@@ -114,8 +128,9 @@ class CandidatePrediction(Base):
     iteration: Mapped[int] = mapped_column(Integer, default=0)
     aggregate_score: Mapped[float] = mapped_column(Float, nullable=False)
     prediction: Mapped[str] = mapped_column(String(20), nullable=False)  # Hired / Rejected
-    actual_label: Mapped[str] = mapped_column(String(20), nullable=False)
-    is_correct: Mapped[bool] = mapped_column(default=False)
+    # Null for live-scored predictions until a decision is recorded.
+    actual_label: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    is_correct: Mapped[Optional[bool]] = mapped_column(nullable=True)
 
     # Relationships
     resume: Mapped["Resume"] = relationship(back_populates="predictions")
@@ -164,6 +179,24 @@ class PromptEvolutionLog(Base):
     original_prompt: Mapped[str] = mapped_column(Text, nullable=True)
     evolved_prompt: Mapped[str] = mapped_column(Text, nullable=False)
     reflection_reasoning: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime, server_default=func.now()
+    )
+
+
+class LLMUsageLog(Base):
+    """Per-call token usage for cost tracking and Bedrock projection."""
+    __tablename__ = "llm_usage_log"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("jobs.id"), nullable=True)
+    run_set_id: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    # evaluation | reflection | seed_generation | scoring | unknown
+    call_type: Mapped[str] = mapped_column(String(32), nullable=False, default="unknown")
+    model: Mapped[str] = mapped_column(String(128), nullable=False)
+    prompt_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    completion_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    total_tokens: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, server_default=func.now()
     )

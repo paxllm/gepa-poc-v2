@@ -1,0 +1,52 @@
+[
+  {
+    "filename": "resume_01_alice.txt",
+    "candidate_name": "Alice Chen - Data Scientist",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_02_bob.txt",
+    "candidate_name": "Bob Martinez - Junior Dev",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_03_carol.txt",
+    "candidate_name": "Carol Singh - DevOps Lead",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_04_david.txt",
+    "candidate_name": "David Lee - Self-Taught Dev",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_05_emma.txt",
+    "candidate_name": "Emma Wilson - Domain Expert",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_06_frank.txt",
+    "candidate_name": "Frank Zhang - Specialist",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_07_grace.txt",
+    "candidate_name": "Grace Park - Career Changer",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_08_henry.txt",
+    "candidate_name": "Henry Kumar - Research PhD",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_09_iris.txt",
+    "candidate_name": "Iris Johnson - Experienced Manager",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_10_jack.txt",
+    "candidate_name": "Jack Wilson - Generalist",
+    "decision": "Hired"
+  }
+]

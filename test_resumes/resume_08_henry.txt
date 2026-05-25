@@ -1,0 +1,28 @@
+Henry Kumar
+Research Scientist | PhD Computer Science | 6 years
+
+SUMMARY
+PhD-trained researcher with deep expertise in machine learning and AI.
+Published researcher with 40+ papers. Strong theoretical foundations.
+
+EXPERIENCE
+- Research Scientist at AI Lab (3 years): Leading research in transformer models
+- PhD Researcher (3 years): Focused on optimization algorithms and deep learning
+- Intern at ResearchInstitute (6 months): Contributed to published papers
+
+RESEARCH EXPERTISE
+Deep Learning, Transformers, Optimization Theory, Probabilistic Models
+Author/Co-author of 40+ peer-reviewed papers
+Patents in machine learning applications
+
+TECHNICAL SKILLS
+Python, PyTorch, JAX, TensorFlow, C++, CUDA
+Strong in mathematics and statistical analysis
+
+EDUCATION
+PhD Computer Science, Top Research University (2021) - Thesis: Advanced Optimization
+BS Physics & Math (2018)
+
+PUBLICATIONS
+40+ papers in top venues (NeurIPS, ICML, ICLR, AAAI)
+H-index: 15+

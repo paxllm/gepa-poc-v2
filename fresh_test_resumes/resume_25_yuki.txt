@@ -1,0 +1,23 @@
+Yuki Hashimoto
+Backend Engineer | 6 years | Tokyo → Remote
+
+SUMMARY
+Backend engineer with 6 years at Japanese tech companies, now seeking remote international roles.
+English is second language (proficiency: B2). Technical communication strong in writing.
+
+EXPERIENCE
+- Senior Backend Engineer at TokyoTech (4 years): Python microservices, PostgreSQL, Kafka
+  Built payment processing system handling $50M+ daily transactions
+- Backend Engineer at StartupJP (2 years): Node.js, real-time notifications, WebSocket
+
+TECHNICAL SKILLS
+Python, FastAPI, Django, Node.js, TypeScript, PostgreSQL, MySQL, Redis, Kafka
+Docker, Kubernetes, AWS, GCP
+Testing: pytest, Jest, k6 load testing
+
+ENGLISH
+Reading/writing: strong. Spoken: conversational. Pair programming in English: comfortable.
+References available who can speak to collaboration quality.
+
+EDUCATION
+BE Computer Science, Tokyo University (2018)

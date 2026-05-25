@@ -10,6 +10,7 @@ import re
 
 from backend.core.config import get_settings
 from backend.core.litellm_client import completion_with_retry, get_llm_timeout
+from backend.core import usage_tracker
 from backend.gepa_integration.prompt_templates import (
     build_seed_candidate,
     build_seed_generation_messages,
@@ -51,6 +52,8 @@ def generate_seed_candidate(
     job_description: str,
     core_values: list[dict[str, str]],
     task_lm_model: str,
+    job_id: int | None = None,
+    run_set_id: str | None = None,
 ) -> dict[str, str]:
     """
     Generate 5 tailored evaluation lenses via LLM, falling back to user prompts on failure.
@@ -74,6 +77,7 @@ def generate_seed_candidate(
         user_prompts, job_description, core_values
     )
 
+    usage_tracker.set_call_context(job_id, run_set_id, "seed_generation")
     try:
         completion = completion_with_retry(
             model=task_lm_model,

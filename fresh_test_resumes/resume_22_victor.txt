@@ -1,0 +1,22 @@
+Victor Santos
+Software Engineer | Enterprise Systems | 20 years
+
+SUMMARY
+Highly experienced engineer with 20 years in enterprise Java and .NET systems.
+Maintaining large banking and insurance systems. Looking to modernise into web/cloud.
+
+EXPERIENCE
+- Senior Developer at BigBank (12 years): Core banking system in Java EE, Oracle DB, COBOL interfacing
+- Developer at InsuranceCorp (8 years): Policy management in .NET Framework / C#
+
+CURRENT SKILLS
+Java EE, .NET Framework 3.5, Oracle SQL, IBM MQ, SOAP web services, XML
+Basic awareness of Docker; has not used it in production
+Attempted to learn React from a book; got through first 3 chapters
+
+GOAL
+Wants to modernise. Not yet there. Self-assessment: "I know enterprise Java very well
+but I'd need significant ramp-up time to be productive in a modern JS/Python stack."
+
+EDUCATION
+BE Computer Science (2004)

@@ -1,0 +1,19 @@
+Paul Decker
+Software Developer | 5 years
+SUMMARY
+Software developer with solid technical skills but a troubled employment history.
+Left 4 jobs in 5 years; two terminations, two resignations before 6 months.
+TECHNICAL SKILLS
+Python, JavaScript, React, Node.js, PostgreSQL, Docker
+Skills are real; not the issue.
+EMPLOYMENT HISTORY
+- Developer at CompanyD (6 months): Resigned — "not a culture fit"
+- Developer at CompanyC (8 months): Terminated — missed deadlines repeatedly
+- Developer at CompanyB (1 year): Resigned — "management problems"
+- Developer at CompanyA (1 year, longest tenure): Left for better offer, counter-offered and declined
+- Junior Developer at CompanyZ (1 year): Company folded
+REFERENCES
+All references contacted described reliability and follow-through as concerns.
+Technical skills were consistently praised; professional conduct was consistently flagged.
+EDUCATION
+BS Computer Science (2019)

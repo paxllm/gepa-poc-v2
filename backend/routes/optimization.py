@@ -2,7 +2,6 @@
 Optimization endpoints: start, status, and results.
 """
 
-import asyncio
 import uuid
 from typing import Any
 
@@ -12,11 +11,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.config import get_settings
 from backend.core.database import get_db
+from backend.gepa_integration.prompt_loader import load_active_candidate
 from backend.gepa_integration.runner import (
     get_run_status,
     init_run_status,
     resolve_optimization_params,
-    run_optimization,
+    run_optimization_in_background,
 )
 from backend.gepa_integration.prompt_templates import extract_user_lens, normalize_prompts
 from backend.models.db_models import (
@@ -88,32 +88,6 @@ def _build_evolution_responses(
             )
         )
     return responses
-
-
-def _run_optimization_sync(
-    job_id: int,
-    prompts: list[str],
-    max_metric_calls: int | None,
-    hire_threshold: float | None,
-    early_stop_patience: int | None,
-    force_resplit: bool,
-):
-    """Wrapper to run async optimization in a new event loop for background tasks."""
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        loop.run_until_complete(
-            run_optimization(
-                job_id=job_id,
-                prompts=prompts,
-                max_metric_calls=max_metric_calls,
-                hire_threshold=hire_threshold,
-                early_stop_patience=early_stop_patience,
-                force_resplit=force_resplit,
-            )
-        )
-    finally:
-        loop.close()
 
 
 async def _get_split_summary(db: AsyncSession, job_id: int) -> SplitSummaryResponse:
@@ -196,7 +170,7 @@ async def start_optimization(
     )
 
     background_tasks.add_task(
-        _run_optimization_sync,
+        run_optimization_in_background,
         job_id=job_id,
         prompts=prompts,
         max_metric_calls=max_metric_calls,
@@ -205,6 +179,86 @@ async def start_optimization(
         force_resplit=request.force_resplit,
     )
 
+    return OptimizationStatusResponse(
+        status="running",
+        current_iteration=0,
+        max_metric_calls=max_metric_calls,
+        hire_threshold=hire_threshold,
+        split_summary=split_summary,
+    )
+
+
+@router.post("/retrain", response_model=OptimizationStatusResponse, status_code=202)
+async def retrain(
+    job_id: int,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db),
+):
+    """Warm-started re-optimization: seeds GEPA with the current best prompts."""
+    settings = get_settings()
+
+    job_result = await db.execute(select(Job).where(Job.id == job_id))
+    if not job_result.scalar_one_or_none():
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    if get_run_status(job_id).get("status") == "running":
+        raise HTTPException(
+            status_code=409,
+            detail="Optimization is already running for this job",
+        )
+
+    resume_result = await db.execute(
+        select(Resume).where(
+            Resume.job_id == job_id,
+            Resume.parsed_text.is_not(None),
+            Resume.status == "decided",
+            Resume.hiring_label.is_not(None),
+        )
+    )
+    resumes = resume_result.scalars().all()
+    if len(resumes) < settings.min_resumes_for_split:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"At least {settings.min_resumes_for_split} decided resumes are required "
+                f"for retraining (got {len(resumes)})"
+            ),
+        )
+
+    active = await load_active_candidate(db, job_id)
+    if active is None:
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "No prompt set is available to warm-start from. "
+                "Complete the setup wizard and run /optimize first."
+            ),
+        )
+    _, candidate = active
+    prompts = [candidate[f"prompt_{i + 1}"] for i in range(5)]
+
+    max_metric_calls, hire_threshold, early_stop_patience = resolve_optimization_params(
+        None, None, None
+    )
+    run_set_id = f"run_{uuid.uuid4().hex[:8]}"
+    init_run_status(
+        job_id,
+        run_set_id=run_set_id,
+        max_metric_calls=max_metric_calls,
+        hire_threshold=hire_threshold,
+    )
+
+    background_tasks.add_task(
+        run_optimization_in_background,
+        job_id=job_id,
+        prompts=prompts,
+        max_metric_calls=max_metric_calls,
+        hire_threshold=hire_threshold,
+        early_stop_patience=early_stop_patience,
+        force_resplit=False,
+    )
+
+    split_summary = await _get_split_summary(db, job_id)
     return OptimizationStatusResponse(
         status="running",
         current_iteration=0,

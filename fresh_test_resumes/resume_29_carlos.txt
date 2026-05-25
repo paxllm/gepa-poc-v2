@@ -1,0 +1,25 @@
+Carlos Rivera
+Senior Full Stack Engineer | Team Lead | Agile Coach
+
+SUMMARY
+Senior engineer and informal agile coach. Excellent communicator and team player.
+Known for asking the right questions and unblocking teams. Culture builder.
+
+EXPERIENCE
+- Team Lead at WebAgency (4 years): Led daily standups, facilitated retrospectives,
+  communicated with clients. Technical contributions primarily debugging CSS.
+- Developer at SmallShop (3 years): Maintained existing jQuery codebase
+
+ACHIEVEMENTS
+- Reduced meeting inefficiency by introducing new retrospective format
+- Improved client satisfaction scores through better communication
+- Organised company hackathon (did not submit a project)
+
+TECHNICAL CLAIMS
+"Full stack" (HTML/CSS/jQuery; has not built a REST API)
+"React experience" (watched a 3-hour YouTube course, did not complete)
+"Python" (one university course, grade: C)
+
+EDUCATION
+BA Communications (2016)
+Certified Scrum Master (2021)

@@ -1,0 +1,18 @@
+Theo Chen
+Software Engineer | 4 years
+SUMMARY
+Mid-level engineer who has grown steadily and is ready for more ownership.
+Not exceptional on paper but consistently reliable, collaborative, and improving.
+EXPERIENCE
+- Software Engineer at SteadyGrowthCo (4 years): Backend Python, some React, PostgreSQL
+  Promoted to "mid-level" after 18 months; now mentoring one junior engineer
+  Delivered every project assigned on time; zero production P0 incidents caused
+  Learning system design and distributed systems independently
+SKILLS
+Python, FastAPI, React, PostgreSQL, Redis, Docker, AWS (basic)
+Good testing habits, clean code, solid PR review quality
+GROWTH INDICATORS
+Reads architecture books on own time; regularly attends team design discussions;
+volunteered for on-call 3 months before it was required
+EDUCATION
+BS Computer Science, State University (2020)

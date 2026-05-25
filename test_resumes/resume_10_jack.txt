@@ -1,0 +1,27 @@
+Jack Wilson
+Software Engineer | Full Stack | 7 years
+
+SUMMARY
+Versatile engineer comfortable with all aspects of software development.
+Solid fundamentals and ability to learn and adapt to different domains quickly.
+
+EXPERIENCE
+- Senior Engineer at ProductCo (3 years): Owned multiple high-impact projects
+- Software Engineer at ServicesInc (2 years): Built features across full stack
+- Junior Engineer at StartupABC (2 years): Learned foundations with great mentors
+
+SKILLS
+Backend: Python, Node.js, Go, Java (experienced)
+Frontend: React, Vue, TypeScript (experienced)
+Infrastructure: Docker, Kubernetes, basic DevOps
+Databases: SQL, MongoDB, Redis, Elasticsearch
+
+STRENGTHS
+- Quick learner who adapts to new tech stacks
+- Strong debugging and problem-solving skills
+- Good communication and documentation
+- Consistent contributor across multiple services
+
+EDUCATION
+BS Computer Science (2017)
+Continuous learning: SOLID principles, Design patterns, System design

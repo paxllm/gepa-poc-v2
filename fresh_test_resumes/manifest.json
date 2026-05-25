@@ -1,0 +1,257 @@
+[
+  {
+    "filename": "resume_01_alice.txt",
+    "candidate_name": "Alice Chen - Data Scientist",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_02_bob.txt",
+    "candidate_name": "Bob Martinez - Junior Dev",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_03_carol.txt",
+    "candidate_name": "Carol Singh - DevOps Lead",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_04_david.txt",
+    "candidate_name": "David Lee - Self-Taught Dev",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_05_emily.txt",
+    "candidate_name": "Emily Davis - Business Analyst",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_06_frank.txt",
+    "candidate_name": "Frank Zhang - SRE Specialist",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_07_grace.txt",
+    "candidate_name": "Grace Park - Bootcamp Grad",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_08_henry.txt",
+    "candidate_name": "Henry Kumar - Research PhD",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_09_igor.txt",
+    "candidate_name": "Igor Petrov - Engineering Manager",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_10_jack.txt",
+    "candidate_name": "Jack Wilson - Full Stack Generalist",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_11_keiko.txt",
+    "candidate_name": "Keiko Tanaka - FAANG Dropout",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_12_liam.txt",
+    "candidate_name": "Liam O'Brien - Gap Year Engineer",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_13_maya.txt",
+    "candidate_name": "Maya Patel - Overqualified Architect",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_14_noah.txt",
+    "candidate_name": "Noah Kim - Open Source Star",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_15_olivia.txt",
+    "candidate_name": "Olivia Brooks - Junior Overachiever",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_16_peter.txt",
+    "candidate_name": "Peter Nguyen - Military Tech Veteran",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_17_quinn.txt",
+    "candidate_name": "Quinn Zhao - Resume Padder",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_18_rachel.txt",
+    "candidate_name": "Rachel Fernandez - Healthcare Dev",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_19_samuel.txt",
+    "candidate_name": "Samuel Ayers - Inconsistent Track Record",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_20_tara.txt",
+    "candidate_name": "Tara Okonkwo - Non-Technical Co-Founder",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_21_uma.txt",
+    "candidate_name": "Uma Krishnan - Staff Eng Lateral",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_22_victor.txt",
+    "candidate_name": "Victor Santos - Legacy Tech Expert",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_23_wendy.txt",
+    "candidate_name": "Wendy Lin - Strong Junior",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_24_xander.txt",
+    "candidate_name": "Xander Bell - Impressive Titles, Weak Output",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_25_yuki.txt",
+    "candidate_name": "Yuki Hashimoto - Non-English Background",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_26_zara.txt",
+    "candidate_name": "Zara Ahmed - Product Manager Pivot",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_27_aaron.txt",
+    "candidate_name": "Aaron Patel - Brilliant Specialist",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_28_bianca.txt",
+    "candidate_name": "Bianca Costa - Returning Mom",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_29_carlos.txt",
+    "candidate_name": "Carlos Rivera - All Talk",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_30_elena.txt",
+    "candidate_name": "Elena Vasquez - ML Ops Engineer",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_31_felix.txt",
+    "candidate_name": "Felix Osei - Brilliant Student, No Exp",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_32_gina.txt",
+    "candidate_name": "Gina Park - Embedded Systems Eng",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_33_harold.txt",
+    "candidate_name": "Harold Simmons - Credential Collector",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_34_isabelle.txt",
+    "candidate_name": "Isabelle Moreau - Tech Lead at NGO",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_35_james.txt",
+    "candidate_name": "James Whitmore - Impressive Portfolio, Shallow",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_36_kavya.txt",
+    "candidate_name": "Kavya Reddy - Cloud Infrastructure Eng",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_37_lars.txt",
+    "candidate_name": "Lars Jensen - Academic Theorist",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_38_mila.txt",
+    "candidate_name": "Mila Torres - Startup Generalist",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_39_nate.txt",
+    "candidate_name": "Nate Sullivan - Stale Senior",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_40_olga.txt",
+    "candidate_name": "Olga Ivanova - Data Engineer",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_41_paul.txt",
+    "candidate_name": "Paul Decker - Promising but Flaky",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_42_rosa.txt",
+    "candidate_name": "Rosa Mendez - Community College Path",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_43_simon.txt",
+    "candidate_name": "Simon Walker - Smart but Arrogant",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_44_theo.txt",
+    "candidate_name": "Theo Chen - Strong Mid-Level",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_45_ursula.txt",
+    "candidate_name": "Ursula Grant - AI-Dependent Engineer",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_46_vera.txt",
+    "candidate_name": "Vera Popov - Gaming Industry Dev",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_47_walter.txt",
+    "candidate_name": "Walter Brown - Perpetual Intern",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_48_xin.txt",
+    "candidate_name": "Xin Liu - Strong Senior Backend",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_49_yasmin.txt",
+    "candidate_name": "Yasmin Okafor - Diversity Hire Red Flag",
+    "decision": "Hired"
+  },
+  {
+    "filename": "resume_50_zach.txt",
+    "candidate_name": "Zach Turner - Great Culture Add",
+    "decision": "Rejected"
+  },
+  {
+    "filename": "resume_51_diana.txt",
+    "candidate_name": "Diana Foster - Finance-to-Tech",
+    "decision": "Hired"
+  }
+]

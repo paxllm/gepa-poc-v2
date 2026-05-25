@@ -1,0 +1,22 @@
+Uma Krishnan
+Staff Engineer | Full Stack | 12 years
+
+SUMMARY
+Staff-level engineer moving from a large company to a mid-stage startup for the impact
+and ownership. Strong in system design, cross-team execution, and building culture.
+
+EXPERIENCE
+- Staff Engineer at BigTech (5 years): Technical lead for payments infrastructure
+  Defined architecture used by 200+ engineers; drove 3 cross-org platform migrations
+- Senior Engineer at ScaleUp (4 years): Founding engineer for analytics product
+- Software Engineer at StartupEarly (3 years): Full-stack on core product
+
+SKILLS
+Python, TypeScript, React, Go, Java
+PostgreSQL, MySQL, Kafka, DynamoDB, Redis
+AWS, Kubernetes, Terraform
+Technical leadership, RFC writing, cross-functional influence
+
+EDUCATION
+MS Computer Science, IIT Bombay (2012)
+BS Computer Engineering (2010)

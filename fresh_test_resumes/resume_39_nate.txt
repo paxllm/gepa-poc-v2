@@ -1,0 +1,19 @@
+Nate Sullivan
+Senior Software Engineer | 15 years experience
+SUMMARY
+Experienced senior engineer with 15 years building web applications.
+Career has been in stable enterprise environments; skills have not kept pace with the market.
+EXPERIENCE
+- Senior Developer at BigCorp (10 years): Maintained Java EE web application
+  Used the same technology stack the whole time; never needed to change it
+- Developer at OldEnterprise (5 years): Internal tools in ASP.NET WebForms
+CURRENT SKILLS
+Java EE, Struts, JSP, JSF, Ant builds, Oracle DB, SOAP XML web services
+Some awareness of Spring Boot but never used it; aware of React exists
+GAPS (honest)
+Never used Docker, Kubernetes, or any cloud platform
+Last git commit was in SVN until 2022; moved to git reluctantly
+Has not built a REST API (only SOAP)
+Interviewer note: Cannot discuss system design beyond what the current monolith does
+EDUCATION
+BS Computer Science (2009)

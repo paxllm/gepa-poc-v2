@@ -1,0 +1,24 @@
+Maya Patel
+Principal Engineer | Solutions Architect | 15 years
+
+SUMMARY
+Principal architect with 15 years experience designing enterprise systems.
+Applying for a mid-level individual-contributor role due to relocation constraints.
+Comfortable with the step down; career stability is the priority right now.
+
+EXPERIENCE
+- Principal Engineer at EnterpriseGiant (7 years): Architecture across 50+ microservices
+- Solutions Architect at ConsultingFirm (5 years): Client-facing technical designs
+- Senior Developer at OldBankIT (3 years): Core banking system maintenance
+
+NOTE FROM CANDIDATE
+I understand this role is junior to my experience level. I am genuinely fine with that
+but want to be transparent so the team can decide if they want someone at this level.
+
+SKILLS
+Java, .NET, Oracle, COBOL (legacy), basic Python
+Enterprise architecture patterns, SOA, ESB
+
+EDUCATION
+BE Electronics Engineering (2009)
+MBA (2015)

@@ -1,0 +1,17 @@
+Harold Simmons
+AWS Certified | Google Certified | Azure Certified | Scrum Master | ITIL | PMP
+SUMMARY
+Highly certified technology professional with a passion for continuous learning.
+Holder of 18 industry certifications across multiple platforms and methodologies.
+EXPERIENCE
+- IT Support Analyst at CorporateCo (4 years): Helpdesk, ticket resolution, basic network troubleshooting
+- Junior Sysadmin at ManagedIT (2 years): Patch management, user account administration
+CERTIFICATIONS (18 total)
+AWS Solutions Architect, Developer, SysOps, DevOps Pro (all cloud provider certs)
+Google Cloud ACE, PCA; Azure AZ-900, AZ-104; CKAD, CKA
+PMP, PRINCE2, Scrum Master, ITIL, CompTIA A+, Network+, Security+, CISSP (studying)
+HONEST SELF-ASSESSMENT
+Can pass certification exams thoroughly. Have not applied skills in production engineering work.
+Looking for first real engineering role.
+EDUCATION
+BS Information Systems (2020)

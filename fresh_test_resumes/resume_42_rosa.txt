@@ -1,0 +1,18 @@
+Rosa Mendez
+Software Engineer | 5 years | Non-traditional Education
+SUMMARY
+Software engineer who studied at community college and state university while working part-time.
+Paid for education independently. Strong work ethic and practical focus from day one.
+EXPERIENCE
+- Software Engineer at MidSizeTech (3 years): Python/FastAPI APIs and React dashboards
+  Owned 2 services end-to-end; zero production incidents in 18 months
+- Junior Developer at LocalStartup (2 years): Full-stack work on early product
+TECHNICAL SKILLS
+Python, FastAPI, React, TypeScript, PostgreSQL, Redis, Docker, AWS (EC2, S3, Lambda)
+Strong in writing maintainable, well-tested code
+EDUCATION
+BS Computer Science, State University (2020) — transferred from community college
+Worked 30 hours/week throughout to fund education
+GPA: 3.7
+EXTRA
+Mentors 3 junior engineers informally. Organises local Python study group.

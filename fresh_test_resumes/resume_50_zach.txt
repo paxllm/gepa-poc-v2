@@ -1,0 +1,19 @@
+Zach Turner
+Software Engineer | 4 years | "Culture Fit" Candidate
+SUMMARY
+Engineer known as a great team player, morale booster, and office culture builder.
+Technical skills are below what the team needs; references emphasise personality over output.
+EXPERIENCE
+- Software Engineer at StartupCulture (4 years): Known for positive attitude and team events
+  Technical contributions: maintenance work, minor bug fixes, no significant features owned
+  Reference: "Would hire again for culture, not for technical contribution"
+  Reference: "Great to have at offsites. Doesn't move the technical needle."
+SKILLS
+React (basic), JavaScript (intermediate), some Python from tutorials
+Cannot design a system from scratch; struggles with SQL joins
+STRENGTHS (real)
+Team cohesion, conflict de-escalation, onboarding support, social glue
+HONEST ASSESSMENT
+A strong team needs a foundation of strong engineers. This candidate fills a different need.
+EDUCATION
+BA Communications with CS minor (2020)

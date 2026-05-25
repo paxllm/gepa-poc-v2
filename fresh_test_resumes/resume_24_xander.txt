@@ -1,0 +1,26 @@
+Xander Bell
+Senior Principal Engineer | Tech Lead | Innovation Driver
+
+SUMMARY
+Dynamic, visionary, results-oriented technical leader who leverages synergies across
+the full SDLC to deliver transformational outcomes through collaborative excellence.
+
+EXPERIENCE
+- Senior Principal Engineer at TechVenture (3 years): Spearheaded strategic technical initiatives
+  and evangelized architectural best practices (no quantified outcomes listed)
+- Tech Lead at InnovateCo (2 years): Led team of 4 (1 junior, 1 intern, 1 contractor, 1 PM)
+- Senior Developer at ConsultingXYZ (3 years): Delivered enterprise solutions
+
+SKILLS
+All modern languages and frameworks (listed without detail)
+Leadership, Strategy, Innovation, Transformation, Vision
+
+INTERVIEW NOTES (attached)
+Struggled to explain difference between process and thread.
+Could not describe a single concrete system they designed end-to-end.
+"Led" projects turned out to be attending standups.
+Communication very polished; technical substance not there.
+
+EDUCATION
+MBA, Business School (2015)
+BS Management Information Systems (2012)

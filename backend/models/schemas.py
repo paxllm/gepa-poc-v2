@@ -50,7 +50,10 @@ class ResumeResponse(BaseModel):
     job_id: int
     candidate_name: str
     file_type: str
-    hiring_label: str
+    hiring_label: str | None = None
+    status: str = "decided"
+    entry_source: str = "historical"
+    decision_made_at: datetime | None = None
     dataset_split: str | None = None
     parsed_text: str | None = None
 
@@ -121,8 +124,8 @@ class CandidatePredictionResponse(BaseModel):
     iteration: int
     aggregate_score: float
     prediction: str
-    actual_label: str
-    is_correct: bool
+    actual_label: str | None = None
+    is_correct: bool | None = None
 
     model_config = {"from_attributes": True}
 
@@ -232,3 +235,83 @@ class OptimizationResultResponse(BaseModel):
     best_prompts: list[TalentLensResponse]
     predictions: list[CandidatePredictionResponse]
     evolution_log: list[PromptEvolutionResponse]
+
+
+# ─── Live loop: score / decision / pending / training-status ───
+
+class PromptScoreDetail(BaseModel):
+    prompt_index: int
+    score: float
+    rationale: str
+
+
+class ScoreCandidateResponse(BaseModel):
+    resume_id: int
+    candidate_name: str
+    aggregate_score: float
+    prediction: str  # Hired / Rejected
+    hire_threshold: float
+    candidate_set_id_used: str
+    prompt_scores: list[PromptScoreDetail]
+
+
+class DecisionRequest(BaseModel):
+    hiring_label: str  # "Hired" or "Rejected"
+    note: str | None = None
+
+
+class DecisionResponse(BaseModel):
+    resume_id: int
+    hiring_label: str
+    decisions_since_last_train: int
+    auto_retrain_threshold: int
+    auto_retrain_triggered: bool
+
+
+class PendingCandidateResponse(BaseModel):
+    resume_id: int
+    candidate_name: str
+    file_type: str
+    aggregate_score: float | None = None
+    prediction: str | None = None
+    candidate_set_id_used: str | None = None
+    scored_at: datetime | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class TrainingStatusResponse(BaseModel):
+    decisions_since_last_train: int
+    auto_retrain_threshold: int
+    last_optimized_at: datetime | None = None
+    has_active_best_prompts: bool
+    run_status: str  # idle / running / completed / error
+
+
+# ─── Batch Resume Upload ───────────────────────────────────────
+
+class BatchResumeItem(BaseModel):
+    candidate_name: str
+    hiring_label: str  # "Hired" or "Rejected"
+    file_name: str
+    file_content_base64: str  # base64-encoded file content
+
+
+class BatchResumesUploadRequest(BaseModel):
+    resumes: list[BatchResumeItem]
+    auto_retrain: bool = False
+
+
+class BatchResumeUploadResult(BaseModel):
+    candidate_name: str
+    resume_id: int
+    status: str  # "success" or "error"
+    error_message: str | None = None
+
+
+class BatchResumesUploadResponse(BaseModel):
+    total: int
+    successful: int
+    failed: int
+    results: list[BatchResumeUploadResult]
+    auto_retrain_triggered: bool

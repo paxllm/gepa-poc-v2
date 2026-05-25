@@ -15,6 +15,7 @@ import litellm
 from litellm.exceptions import RateLimitError, Timeout
 
 from backend.core.config import get_settings
+from backend.core import usage_tracker
 
 _lock = threading.Lock()
 _request_timestamps: list[float] = []
@@ -80,6 +81,19 @@ def _acquire_rpm_slot() -> None:
             time.sleep(min_interval)
 
 
+def _record_response_usage(model: str, response: Any) -> None:
+    try:
+        u = getattr(response, "usage", None)
+        if u is None:
+            return
+        pt = getattr(u, "prompt_tokens", 0) or 0
+        ct = getattr(u, "completion_tokens", 0) or 0
+        if pt > 0 or ct > 0:
+            usage_tracker.record_usage(model, pt, ct)
+    except Exception:
+        pass
+
+
 def configure_litellm() -> str:
     """Configure litellm for NVIDIA NIM and return the task_lm model string."""
     import os
@@ -116,7 +130,9 @@ def completion_with_retry(
             }
             if timeout is not None:
                 call_kwargs["timeout"] = timeout
-            return litellm.completion(**call_kwargs)
+            response = litellm.completion(**call_kwargs)
+            _record_response_usage(model, response)
+            return response
         except Exception as exc:
             last_exc = exc
             if not _is_retriable_error(exc) or attempt >= max_retries - 1:
@@ -129,12 +145,19 @@ def completion_with_retry(
     raise RuntimeError("completion_with_retry failed without an exception")
 
 
-def make_reflection_lm(model: str, *, timeout: int | float | None = None):
+def make_reflection_lm(
+    model: str,
+    *,
+    timeout: int | float | None = None,
+    job_id: int | None = None,
+    run_set_id: str | None = None,
+):
     """Build a GEPA-compatible reflection_lm callable using the shared wrapper."""
     if timeout is None:
         timeout = get_llm_timeout()
 
     def _reflection_lm(prompt: str | list[dict[str, str]]) -> str:
+        usage_tracker.set_call_context(job_id, run_set_id, "reflection")
         if isinstance(prompt, str):
             messages: list[dict[str, str]] = [{"role": "user", "content": prompt}]
         else:

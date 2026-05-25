@@ -1,0 +1,19 @@
+James Whitmore
+Full Stack Developer | Portfolio Developer
+SUMMARY
+Prolific builder of portfolio projects. 30+ projects on GitHub. Looking for first
+professional role after several years of personal projects and freelance work.
+GITHUB PROJECTS (30+)
+Todo apps (React, Vue, Angular — one in each), Weather apps (10 variations),
+Blog clones, Calculator apps, Chat app (tutorial-based, not deployed), Portfolio website
+All projects: <100 lines each, no tests, no documentation, no users
+FREELANCE
+3 client websites built on WordPress/Wix with minor custom CSS
+SKILLS CLAIMED
+React, Angular, Vue, Svelte, Next.js, Nuxt, Gatsby, Node.js, Django, Rails, Laravel
+(all from short tutorials; none used in production)
+HONEST ASSESSMENT
+Strong at starting projects. Weak at finishing, deploying, or maintaining them.
+No production experience. All projects abandoned after initial build.
+EDUCATION
+Attended 2 years of community college, did not complete degree (2019)

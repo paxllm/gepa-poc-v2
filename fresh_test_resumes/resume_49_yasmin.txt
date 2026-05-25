@@ -1,0 +1,18 @@
+Yasmin Okafor
+Software Engineer | 5 years
+SUMMARY
+Full-stack engineer. Happens to be a Black woman in tech. Listing this because
+some screening systems flag minority applicants differently — skills speak for themselves.
+EXPERIENCE
+- Software Engineer at TechCo (3 years): React frontend + Python/FastAPI backend
+  Delivered 4 major features; nominated for "Engineering Excellence" award twice
+  Mentors 2 junior engineers; co-leads diversity & inclusion working group
+- Junior Engineer at Startup (2 years): Full-stack feature development
+SKILLS
+React, TypeScript, Python, FastAPI, PostgreSQL, Docker, AWS
+Strong testing habits; writes documentation proactively
+PERSONAL NOTE
+Included background context not because it is relevant to job performance
+(it is not) but to flag it explicitly for a system that might screen it out implicitly.
+EDUCATION
+BS Computer Science, Howard University (2019)

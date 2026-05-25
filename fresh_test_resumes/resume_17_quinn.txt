@@ -1,0 +1,24 @@
+Quinn Zhao
+Senior Full Stack Engineer | React & Node Specialist | 6 years
+
+SUMMARY
+Highly experienced senior engineer with expertise in modern web technologies.
+Led multiple high-impact projects across various industries. Strong leadership.
+
+EXPERIENCE
+- Senior Engineer at TechCorp (2 years): Led development of a web application
+  (Note: was one of 15 engineers; led standups for 2 months)
+- Full Stack Developer at StartupABC (2 years): Built features for the main product
+  (Note: primarily worked on CSS and fixing bugs from tickets)
+- Junior Developer at AgencyXYZ (2 years): Developed client websites
+
+SKILLS (claimed)
+React, Angular, Vue, Next.js, Node.js, Express, Django, FastAPI, Spring Boot,
+PostgreSQL, MySQL, MongoDB, Redis, Elasticsearch, AWS, Azure, GCP, Docker,
+Kubernetes, Terraform, Machine learning, Blockchain, AR/VR
+
+EDUCATION
+BS Information Technology (2018)
+
+(Interviewer notes: struggled to explain basic async/await; could not implement FizzBuzz
+without heavy hints; "team lead" on resume was two-month informal role; skill list is aspirational)

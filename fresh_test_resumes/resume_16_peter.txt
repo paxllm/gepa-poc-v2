@@ -1,0 +1,23 @@
+Peter Nguyen
+Software Engineer | US Army Veteran | 8 years total experience
+
+SUMMARY
+Veteran with 5 years military signal corps experience (software and communications systems)
+followed by 3 years civilian software engineering. Disciplined, mission-focused, fast learner.
+
+MILITARY & CIVILIAN EXPERIENCE
+- Software Engineer at CivTech (3 years): Python/React web applications for government clients
+- US Army Signal Corps (5 years): Developed and maintained battlefield communication software,
+  embedded C, mission-critical reliability requirements, zero tolerance for downtime
+
+TECHNICAL SKILLS
+Python, React, JavaScript, C, C++, SQL, Linux, Docker
+Networking fundamentals, hardware integration, real-time systems
+Agile and waterfall, security clearance (expired), very strong documentation habits
+
+SOFT SKILLS
+Extreme attention to detail, calm under pressure, proactive risk identification
+Natural at clear communication up and across chains
+
+EDUCATION
+BS Computer Science, State University (2020, completed while working full-time)

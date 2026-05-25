@@ -1,0 +1,21 @@
+Keiko Tanaka
+Senior Software Engineer | 10 years
+
+SUMMARY
+Former FAANG engineer who left a high-pressure L6 role to join a smaller product-driven team.
+Strong systems thinking, enormous codebase experience, and genuine product curiosity.
+
+EXPERIENCE
+- Senior Software Engineer at MegaTech (6 years): Owned core recommendation pipeline
+- Software Engineer at FastGrowthStartup (4 years): Built search infrastructure from 0 to 100M queries/day
+
+SKILLS
+Python, Java, C++, TypeScript, React
+Large-scale distributed systems, Kafka, Cassandra, Elasticsearch
+System design, Code reviews, Technical mentoring
+
+WHY LEAVING FAANG
+Seeking smaller team where individual impact is visible. Not burned out — re-energised.
+
+EDUCATION
+BS Computer Science, MIT (2014)

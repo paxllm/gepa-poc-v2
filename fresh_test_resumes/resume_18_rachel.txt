@@ -1,0 +1,23 @@
+Rachel Fernandez
+Software Engineer | Healthcare Domain | 7 years
+
+SUMMARY
+Engineer who spent her career building clinical and patient-facing software.
+Deep domain knowledge in FHIR, HL7, HIPAA compliance, and high-stakes regulated systems.
+
+EXPERIENCE
+- Senior Engineer at HealthTechCo (4 years): Built EHR integration platform in Python/FastAPI
+  Used by 300+ hospitals; strict SLA, audit trail requirements, real-time patient data sync
+- Software Engineer at ClinicalSaaS (3 years): React front-end and Node.js APIs for clinical workflows
+
+TECHNICAL SKILLS
+Python, FastAPI, Node.js, React, TypeScript
+PostgreSQL, Redis, HL7 FHIR APIs, OAuth2, JWT
+Docker, Kubernetes, AWS, rigorous testing (pytest, Cypress)
+
+DOMAIN EXPERTISE
+HIPAA compliance, data privacy, auditability, regulated software development lifecycle
+Excellent cross-functional communication with clinical staff and product
+
+EDUCATION
+BS Biomedical Engineering, UC Davis (2017)

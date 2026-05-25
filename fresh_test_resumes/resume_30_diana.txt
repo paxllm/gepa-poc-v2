@@ -1,0 +1,27 @@
+Diana Foster
+Software Engineer | ex-Quant | 5 years engineering, 4 years finance
+
+SUMMARY
+Former quantitative analyst who pivoted fully to software engineering after
+discovering she preferred building systems over modelling spreadsheets.
+4 years finance + 5 years engineering = strong data and systems thinking.
+
+FINANCE BACKGROUND
+- Quantitative Analyst at InvestmentBank (4 years): Python-based pricing models,
+  large dataset analysis, Excel automation tools, SQL for risk reporting
+
+ENGINEERING EXPERIENCE
+- Software Engineer at DataPlatform (5 years): Python, FastAPI, Pandas, Airflow, Spark
+  Built data pipeline serving 200+ internal analysts; owned ingestion, transformation, serving
+
+SKILLS
+Python, FastAPI, Pandas, Numpy, SQL, PostgreSQL, Spark, Airflow, dbt
+Docker, Kubernetes, AWS, data engineering patterns
+
+CROSS-DOMAIN VALUE
+Financial domain expertise + engineering rigor + data fluency. Particularly strong
+in correctness, auditability, and building for analysts who know when numbers are wrong.
+
+EDUCATION
+MSc Computational Finance, Imperial College (2015)
+BS Mathematics (2013)

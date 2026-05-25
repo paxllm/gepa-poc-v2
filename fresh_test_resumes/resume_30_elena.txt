@@ -1,0 +1,16 @@
+Elena Vasquez
+MLOps Engineer | 7 years
+SUMMARY
+MLOps engineer bridging the gap between data science and production. Specialises in
+making ML models actually work at scale rather than just in notebooks.
+EXPERIENCE
+- MLOps Lead at AIProductCo (4 years): Built ML platform serving 12 models in production
+  Reduced model deployment time from 2 weeks to 4 hours; built feature store, model registry
+- Data Engineer at DataCo (3 years): ETL pipelines, Spark, Airflow, data quality frameworks
+TECHNICAL SKILLS
+Python, Spark, Airflow, Kubernetes, Docker, MLflow, Kubeflow, Seldon
+AWS SageMaker, Feature Store, Model monitoring, A/B testing infrastructure
+PostgreSQL, Redis, Kafka, Terraform
+EDUCATION
+MS Data Science, Georgia Tech (2017)
+BS Statistics (2015)

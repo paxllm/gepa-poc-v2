@@ -1,0 +1,19 @@
+Simon Walker
+Software Engineer | 6 years | Strong Opinions
+SUMMARY
+Excellent engineer with a track record of high-quality technical work.
+Also known for creating team friction; left two jobs partly due to interpersonal conflicts.
+TECHNICAL RECORD
+Multiple strong projects delivered. Code quality consistently excellent.
+Caught several significant bugs in code review. Well-regarded technically.
+INTERPERSONAL RECORD (from references)
+"Technically brilliant, difficult to work with"
+"Made junior engineers feel small"
+"Refused to use the agreed tech stack and went rogue twice"
+"Right most of the time technically, wrong about how to bring people with you"
+Left job 1: team asked him to leave after 6-month conflict with manager
+Left job 2: quit after his architecture proposal was overruled (it was probably correct)
+SKILLS
+Python, Rust, TypeScript, distributed systems, strong system design
+EDUCATION
+BS Computer Science, Carnegie Mellon (2018)

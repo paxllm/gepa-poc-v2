@@ -1,0 +1,19 @@
+.drop-zone {
+  position: relative;
+  border: 2px dashed var(--color-border, #ccc);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary, rgba(0, 0, 0, 0.02));
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.drop-zone:hover {
+  border-color: var(--color-primary, #4f46e5);
+  background: rgba(79, 70, 229, 0.05);
+}
+
+.drop-zone--active {
+  border-color: var(--color-primary, #4f46e5);
+  background: rgba(79, 70, 229, 0.1);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}

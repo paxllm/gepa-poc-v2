@@ -1,0 +1,24 @@
+Wendy Lin
+Software Engineer | 2 years | Recent CS Grad
+
+SUMMARY
+Recent CS graduate from a strong program with two internships at known companies.
+Built a non-trivial personal project; genuinely curious engineer who reads RFCs for fun.
+
+EXPERIENCE
+- Software Engineering Intern at MidSizetech (summer 2022): Python backend, shipped feature to 1M users
+- Software Engineering Intern at StartupBright (summer 2021): React feature development
+- Part-time TA for Data Structures course (1 year)
+
+PERSONAL PROJECT
+Built a self-hosted personal finance tool (Python/FastAPI + React) used by 50+ friends/family.
+Added multi-user support, OAuth, CSV import, recurring transaction detection.
+Open source, 300+ GitHub stars.
+
+SKILLS
+Python, FastAPI, React, TypeScript, PostgreSQL, Docker, Git
+Strong in algorithms, data structures, system design fundamentals
+
+EDUCATION
+BS Computer Science, Carnegie Mellon (2023)
+GPA 3.8 — Dean's List every semester

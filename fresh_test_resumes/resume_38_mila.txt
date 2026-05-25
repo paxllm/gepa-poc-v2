@@ -1,0 +1,16 @@
+Mila Torres
+Founding Engineer | Full Stack | 6 years
+SUMMARY
+Engineer who joined startups early and learned to do everything. Has worn every hat:
+frontend, backend, infra, on-call, customer calls. Strong in getting things built and shipped.
+EXPERIENCE
+- Founding Engineer at Series A SaaS (4 years): employee #3
+  Built entire product from scratch: React, Node.js, PostgreSQL, deployed on AWS
+  Went from 0 to $2M ARR, 500+ business customers, scaled team from 3 to 20 engineers
+- Software Engineer at Startup #1 (2 years): similarly small team, full ownership
+SKILLS
+TypeScript, React, Node.js, Python (scripts and tools), PostgreSQL, Redis
+AWS full stack (ECS, RDS, S3, CloudFront, SQS), Docker, GitHub Actions
+Product thinking, incident response, hiring (interviewed 50+ candidates)
+EDUCATION
+BS Computer Engineering (2018)

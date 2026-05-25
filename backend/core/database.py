@@ -89,6 +89,7 @@ async def init_db():
             Evaluation,
             IterationMetrics,
             Job,
+            LLMUsageLog,
             PromptEvolutionLog,
             Resume,
             TalentLens,
