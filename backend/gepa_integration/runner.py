@@ -8,6 +8,7 @@ Orchestrates the end-to-end flow:
 """
 
 import asyncio
+import datetime
 import json
 import uuid
 from functools import partial
@@ -23,6 +24,7 @@ from backend.core.config import get_settings
 from backend.core.database import get_session_factory
 from backend.core.encoding import ensure_utf8_environment
 from backend.core.litellm_client import configure_litellm, make_reflection_lm
+from backend.core import usage_tracker
 from backend.gepa_integration.dataset_split import assign_splits
 from backend.gepa_integration.hiring_adapter import HiringAdapter
 from backend.gepa_integration.final_eval import run_final_evaluation
@@ -32,6 +34,7 @@ from backend.models.db_models import (
     CoreValue,
     IterationMetrics,
     Job,
+    LLMUsageLog,
     PromptEvolutionLog,
     Resume,
     TalentLens,
@@ -146,6 +149,8 @@ async def build_dataset(
             Resume.job_id == job_id,
             Resume.dataset_split == split,
             Resume.parsed_text.is_not(None),
+            Resume.status == "decided",
+            Resume.hiring_label.is_not(None),
         )
     )
     resumes = resume_result.scalars().all()
@@ -165,6 +170,57 @@ async def build_dataset(
         })
 
     return dataset
+
+
+async def _flush_usage_to_db(
+    factory,
+    fallback_job_id: int,
+    fallback_run_set_id: str,
+) -> None:
+    """Persist all pending usage records to llm_usage_log."""
+    records = usage_tracker.drain_pending()
+    if not records:
+        return
+    async with factory() as session:
+        for rec in records:
+            session.add(
+                LLMUsageLog(
+                    job_id=rec.job_id if rec.job_id is not None else fallback_job_id,
+                    run_set_id=rec.run_set_id or fallback_run_set_id,
+                    call_type=rec.call_type,
+                    model=rec.model,
+                    prompt_tokens=rec.prompt_tokens,
+                    completion_tokens=rec.completion_tokens,
+                    total_tokens=rec.total_tokens,
+                )
+            )
+        await session.commit()
+
+
+def run_optimization_in_background(
+    job_id: int,
+    prompts: list[str],
+    max_metric_calls: int | None,
+    hire_threshold: float | None,
+    early_stop_patience: int | None,
+    force_resplit: bool,
+):
+    """Sync wrapper used by FastAPI's BackgroundTasks (which doesn't run coroutines)."""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        loop.run_until_complete(
+            run_optimization(
+                job_id=job_id,
+                prompts=prompts,
+                max_metric_calls=max_metric_calls,
+                hire_threshold=hire_threshold,
+                early_stop_patience=early_stop_patience,
+                force_resplit=force_resplit,
+            )
+        )
+    finally:
+        loop.close()
 
 
 async def run_optimization(
@@ -206,14 +262,20 @@ async def run_optimization(
                 )
                 .values(is_active=False)
             )
+            # Scope metric / evolution deletes to the current run_set_id only.
+            # Prior runs' history is preserved so EvolutionPage can show v1 → v2 → v3.
             await session.execute(
                 delete(IterationMetrics).where(
                     IterationMetrics.job_id == job_id,
                     IterationMetrics.iteration >= 0,
+                    IterationMetrics.candidate_set_id == run_set_id,
                 )
             )
             await session.execute(
-                delete(PromptEvolutionLog).where(PromptEvolutionLog.job_id == job_id)
+                delete(PromptEvolutionLog).where(
+                    PromptEvolutionLog.job_id == job_id,
+                    PromptEvolutionLog.child_candidate_set_id == run_set_id,
+                )
             )
             await session.commit()
 
@@ -257,6 +319,8 @@ async def run_optimization(
             job_description=job.description,
             core_values=core_values,
             task_lm_model=task_lm_model,
+            job_id=job_id,
+            run_set_id=run_set_id,
         )
         seed_set_id = f"seed_{uuid.uuid4().hex[:8]}"
 
@@ -271,6 +335,7 @@ async def run_optimization(
                         prompt_text=seed_candidate[prompt_key],
                         iteration=0,
                         generation="seed",
+                        is_active=False,
                     )
                 )
             await session.commit()
@@ -301,7 +366,11 @@ async def run_optimization(
             no_improve_stopper, "no_improvement", stop_holder
         )
 
-        reflection_lm = make_reflection_lm(task_lm_model)
+        reflection_lm = make_reflection_lm(
+            task_lm_model,
+            job_id=job_id,
+            run_set_id=run_set_id,
+        )
 
         result = await loop.run_in_executor(
             None,
@@ -342,6 +411,18 @@ async def run_optimization(
         final_iteration = -1
 
         async with factory() as session:
+            # Deactivate every currently-active set (seed or evolved) before
+            # marking the new best as is_active=True. This keeps exactly one
+            # active set per job at all times.
+            await session.execute(
+                update(TalentLens)
+                .where(
+                    TalentLens.job_id == job_id,
+                    TalentLens.is_active.is_(True),
+                )
+                .values(is_active=False)
+            )
+
             for key, prompt_text in best_candidate.items():
                 idx = int(key.split("_")[1])
                 session.add(
@@ -382,7 +463,18 @@ async def run_optimization(
                     "stop_reason": stop_reason,
                     "final_eval_error": str(eval_exc),
                 }
+
+            # Mark the job as freshly trained so the "decisions since last
+            # train" counter resets and the auto-retrain trigger only fires
+            # on decisions recorded after this run.
+            await session.execute(
+                update(Job)
+                .where(Job.id == job_id)
+                .values(last_optimized_at=datetime.datetime.utcnow())
+            )
             await session.commit()
+
+        await _flush_usage_to_db(factory, job_id, run_set_id)
 
         _run_status[job_id] = {
             "status": "completed",

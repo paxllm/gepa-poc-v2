@@ -13,6 +13,15 @@ This proof-of-concept (POC) implements a self-learning hiring intelligence syste
 
 ### 1. Backend Setup
 
+**Requires Python 3.10+** (the project uses `X | Y` type hints). On macOS with only the system Python 3.9, install via Homebrew and recreate the venv:
+
+```bash
+brew install python@3.12
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
 1. **Configure Environment Variables**:
    Open the `.env` file in the root directory and enter your NVIDIA NIM API key:
    ```env
@@ -37,6 +46,10 @@ This proof-of-concept (POC) implements a self-learning hiring intelligence syste
 
 3. **Start FastAPI Backend**:
    ```bash
+   # macOS / Linux (with venv activated)
+   uvicorn backend.main:app --reload
+
+   # Windows
    .venv\Scripts\uvicorn backend.main:app --reload
    ```
    The backend will be running on `http://localhost:8000`.

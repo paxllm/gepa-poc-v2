@@ -1,0 +1,3 @@
+Test Resume 5
+
+DevOps specialist. 6 years in infrastructure. Kubernetes, Docker, Terraform. Built deployment pipelines.

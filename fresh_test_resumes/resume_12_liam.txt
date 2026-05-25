@@ -1,0 +1,22 @@
+Liam O'Brien
+Full Stack Engineer | 6 years (with career gap)
+
+SUMMARY
+Engineer with strong foundations who took a 14-month career break to care for a family member.
+Returned refreshed with updated skills and several side projects completed during the gap.
+
+EXPERIENCE
+- Senior Engineer at SaasCo (4 years): Led front-end architecture migration to React
+- Engineer at AgencyBuild (2 years): Client-facing web apps, tight deadlines
+- Career break (14 months): Family caring. Built 2 open-source tools during downtime.
+
+SKILLS
+TypeScript, React, Next.js, Node.js, PostgreSQL, Redis
+AWS (Lambda, RDS, S3), GitHub Actions, Storybook
+
+GAP PROJECTS
+- react-table-pro: 800+ GitHub stars, 12k weekly npm downloads
+- Contributed 3 features to popular OSS project
+
+EDUCATION
+BS Software Engineering (2017)

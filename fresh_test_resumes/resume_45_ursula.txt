@@ -1,0 +1,18 @@
+Ursula Grant
+Software Engineer | 3 years
+SUMMARY
+Engineer who joined the industry during the AI coding tool era.
+Can produce working code quickly with AI assistance but struggles without it.
+EXPERIENCE
+- Software Engineer at StartupNew (2 years): Built features using Copilot/ChatGPT
+  Code reviews flagged: does not understand own implementations; cannot debug without AI
+- Junior Developer at SmallCo (1 year): Similar pattern observed
+SKILLS (with AI assistance)
+Python, JavaScript, React, SQL — can produce code in all of these with AI help
+SKILLS (without AI assistance)
+Interviewer assessment: "Could not explain what async/await does. Could not write
+a basic function without opening ChatGPT. Could not debug a simple off-by-one error."
+HONEST REFLECTION
+"I know I rely heavily on AI tools. I'm working on understanding fundamentals better."
+EDUCATION
+BS Information Technology (2022)

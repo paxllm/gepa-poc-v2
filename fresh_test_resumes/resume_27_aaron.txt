@@ -1,0 +1,25 @@
+Aaron Patel
+Security Engineer | Backend Developer | 8 years
+
+SUMMARY
+Security-focused backend engineer who speaks both security and engineering fluently.
+Not a traditional full-stack candidate but brings rare security expertise to product teams.
+
+EXPERIENCE
+- Senior Security Engineer at FinTech (5 years): Embedded security in development lifecycle
+  Designed auth systems, led penetration testing, built automated security scanning in CI/CD
+- Backend Developer at SecurityCo (3 years): Python/Go APIs with security-first design
+
+SKILLS
+Python, Go, TypeScript, Node.js (security-focused work in all)
+OAuth2, OIDC, JWT, SAML, PKI, TLS internals
+AWS security services, WAF, IAM, Secrets Manager
+OWASP top 10, threat modelling, security code review
+
+WHAT I BRING
+Every feature I build ships with threat model and auth design. Teams I've joined
+have seen security-related incidents drop significantly. I write and review code daily.
+
+EDUCATION
+BS Computer Science with Cybersecurity Minor (2016)
+OSCP certified (2019)

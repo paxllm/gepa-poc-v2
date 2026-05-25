@@ -1,0 +1,21 @@
+Emma Wilson
+Business Analyst | Project Manager
+
+SUMMARY
+Experienced business analyst transitioning to software development.
+Some programming experience but primarily non-technical background.
+
+EXPERIENCE
+- Business Analyst at Finance Corp (6 years): Managed requirements and stakeholders
+- Project Manager at Consulting (4 years): Managed projects using Waterfall methodology
+
+TECHNICAL SKILLS
+Basic Excel VBA, SQL (beginner), Some JavaScript from online course
+Strong in requirements gathering and process mapping
+
+SOFT SKILLS
+Stakeholder management, Documentation, Process improvement, Presentation
+
+EDUCATION
+BA Business Administration (2014)
+Completed 1 online programming course (did not finish)

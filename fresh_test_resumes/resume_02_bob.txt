@@ -1,0 +1,23 @@
+Bob Martinez
+Software Engineer | Recent Graduate
+
+SUMMARY
+Recent college graduate with bootcamp training in web development.
+Excited to start my tech career and learn from experienced developers.
+
+EXPERIENCE
+Internship at LocalStartup (6 months): Built React components for internal tools
+Personal projects: Created 3 GitHub projects with few stars
+
+SKILLS
+JavaScript, React, Node.js, HTML/CSS, Git, Bootstrap
+Some Python knowledge from courses
+
+EDUCATION
+BS Business Administration (2023)
+Coding Bootcamp Certificate (2023)
+
+PROJECTS
+- Personal blog built with React
+- Todo app with React and Firebase
+- Simple weather app

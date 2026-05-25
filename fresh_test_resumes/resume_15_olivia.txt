@@ -1,0 +1,22 @@
+Olivia Brooks
+Software Engineer | 1 year experience
+
+SUMMARY
+Ambitious junior engineer very eager to learn and demonstrate value.
+Completed coding bootcamp 12 months ago, currently in first job.
+
+EXPERIENCE
+- Junior Developer at SmallAgency (1 year): Maintained WordPress sites, small JavaScript features
+- Bootcamp project: Built a to-do list app with React
+
+SKILLS
+HTML, CSS, JavaScript (beginner/intermediate), React (beginner)
+WordPress, basic Python from tutorials
+
+INTERESTS
+Passionate about AI and machine learning. Would love to learn FastAPI and build AI products.
+Worked through first few chapters of a Python ML textbook.
+
+EDUCATION
+BA English Literature (2022)
+Software Development Bootcamp (2023)

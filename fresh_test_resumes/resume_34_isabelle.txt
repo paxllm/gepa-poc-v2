@@ -1,0 +1,18 @@
+Isabelle Moreau
+Software Engineer | 8 years | Non-profit and Social-Impact Tech
+SUMMARY
+Full-stack engineer who has spent her career building high-impact tools for non-profits
+and NGOs. Smaller scale than enterprise but high ownership, tight budgets, and deep mission
+alignment. Making move to product company to grow technically.
+EXPERIENCE
+- Lead Software Engineer at GlobalHealth NGO (5 years): Built patient tracking system used in 12 countries
+  Python/Django backend, React frontend, operated on minimal budget, 3-person tech team
+  99.5% uptime requirement — lives depended on it
+- Software Engineer at EducationNPO (3 years): Learning management system for 40k students
+TECHNICAL SKILLS
+Python, Django, React, PostgreSQL, Docker, AWS (cost-optimised workloads)
+Offline-first architecture, low-bandwidth optimisation, multilingual systems
+STRENGTHS
+Extreme ownership mindset, ruthless prioritisation, building for reliability on minimal infra
+EDUCATION
+BS Computer Science (2016)

@@ -11,7 +11,16 @@ from backend.core.database import init_db
 from backend.core.encoding import ensure_utf8_environment
 
 ensure_utf8_environment()
-from backend.routes import config, core_values, jobs, optimization, resumes, seed_prompts
+from backend.routes import (
+    config,
+    core_values,
+    costs,
+    jobs,
+    optimization,
+    resumes,
+    scoring,
+    seed_prompts,
+)
 
 
 @asynccontextmanager
@@ -43,7 +52,9 @@ app.include_router(jobs.router)
 app.include_router(core_values.router)
 app.include_router(resumes.router)
 app.include_router(optimization.router)
+app.include_router(scoring.router)
 app.include_router(seed_prompts.router)
+app.include_router(costs.router)
 
 
 @app.get("/api/health")

@@ -1,0 +1,17 @@
+Vera Popov
+Software Engineer | 7 years | Game Development
+SUMMARY
+Game developer with strong C++ foundations and systems programming expertise.
+Transitioning from games to backend/platform engineering; strong fundamentals transfer well.
+EXPERIENCE
+- Senior Engineer at GameStudio (5 years): Core gameplay systems, networking code, physics engine
+  C++17, multithreaded systems, 60fps performance budgets, shipped 2 AAA titles
+- Junior Developer at IndieStudio (2 years): Unity C#, mobile games
+NEW DIRECTION SKILLS (18 months self-directed)
+Python, Go, REST APIs, Docker, PostgreSQL, AWS basics
+Has built 2 production-quality backend services; deployed and monitoring them
+TRANSFERABLE SKILLS
+Deep C++ and performance engineering, multithreading, memory management,
+systems thinking, debugging under extreme constraints, shipping to millions
+EDUCATION
+BS Computer Science with Graphics specialisation (2017)

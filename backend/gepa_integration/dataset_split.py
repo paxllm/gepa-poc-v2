@@ -85,7 +85,12 @@ async def assign_splits(
         raise ValueError("train_ratio + val_ratio + test_ratio must sum to 1.0")
 
     result = await session.execute(
-        select(Resume).where(Resume.job_id == job_id, Resume.parsed_text.is_not(None))
+        select(Resume).where(
+            Resume.job_id == job_id,
+            Resume.parsed_text.is_not(None),
+            Resume.status == "decided",
+            Resume.hiring_label.is_not(None),
+        )
     )
     resumes = list(result.scalars().all())
     n = len(resumes)
@@ -95,7 +100,10 @@ async def assign_splits(
             f"At least {min_n} parsed resumes are required for train/val/test split (got {n})."
         )
 
-    if not force_resplit and resumes and all(r.dataset_split in ("train", "val", "test") for r in resumes):
+    fully_split = bool(resumes) and all(
+        r.dataset_split in ("train", "val", "test") for r in resumes
+    )
+    if not force_resplit and fully_split:
         counts = _split_summary(resumes)
         return {"reused": True, **counts}
 
@@ -105,27 +113,58 @@ async def assign_splits(
         )
         await session.flush()
         result = await session.execute(
-            select(Resume).where(Resume.job_id == job_id, Resume.parsed_text.is_not(None))
+            select(Resume).where(
+                Resume.job_id == job_id,
+                Resume.parsed_text.is_not(None),
+                Resume.status == "decided",
+                Resume.hiring_label.is_not(None),
+            )
         )
         resumes = list(result.scalars().all())
 
-    n_train, n_val, n_test = _global_split_counts(n, train_ratio, val_ratio, test_ratio)
-
     rng = random.Random(seed ^ job_id)
-    order = _stratified_order(resumes, rng)
+    unassigned = [r for r in resumes if r.dataset_split not in ("train", "val", "test")]
 
-    for i, r in enumerate(order):
-        if i < n_train:
-            r.dataset_split = "train"
-        elif i < n_train + n_val:
-            r.dataset_split = "val"
-        else:
-            r.dataset_split = "test"
+    if force_resplit or not any(r.dataset_split in ("train", "val", "test") for r in resumes):
+        # Global re-split: stratified round-robin across all resumes.
+        n_train, n_val, n_test = _global_split_counts(n, train_ratio, val_ratio, test_ratio)
+        order = _stratified_order(resumes, rng)
+        for i, r in enumerate(order):
+            if i < n_train:
+                r.dataset_split = "train"
+            elif i < n_train + n_val:
+                r.dataset_split = "val"
+            else:
+                r.dataset_split = "test"
+    else:
+        # Incremental: leave existing assignments alone; place new resumes
+        # into whichever split is most under-target relative to the configured ratios.
+        ratios = {"train": train_ratio, "val": val_ratio, "test": test_ratio}
+        order = _stratified_order(unassigned, rng)
+        for r in order:
+            current = {
+                "train": sum(1 for x in resumes if x.dataset_split == "train"),
+                "val": sum(1 for x in resumes if x.dataset_split == "val"),
+                "test": sum(1 for x in resumes if x.dataset_split == "test"),
+            }
+            total_assigned = sum(current.values()) + 1  # incl. the one we're about to place
+            # Pick the split with the largest positive deficit (target - actual).
+            deficits = {
+                split: ratios[split] * total_assigned - current[split]
+                for split in ("train", "val", "test")
+            }
+            choice = max(deficits, key=deficits.get)
+            r.dataset_split = choice
 
     await session.commit()
 
     result2 = await session.execute(
-        select(Resume).where(Resume.job_id == job_id, Resume.parsed_text.is_not(None))
+        select(Resume).where(
+            Resume.job_id == job_id,
+            Resume.parsed_text.is_not(None),
+            Resume.status == "decided",
+            Resume.hiring_label.is_not(None),
+        )
     )
     refreshed = list(result2.scalars().all())
     counts = _split_summary(refreshed)

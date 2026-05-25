@@ -1,0 +1,17 @@
+Olga Ivanova
+Senior Data Engineer | 8 years
+SUMMARY
+Data engineer with deep expertise in building reliable, scalable data pipelines and platforms.
+Moves fluidly between infrastructure, orchestration, and SQL modeling layers.
+EXPERIENCE
+- Senior Data Engineer at DataDrivenCo (5 years): Built company's entire data platform
+  Airflow, dbt, Snowflake, Fivetran ingestion layer, 200+ data models serving analytics
+  Data quality frameworks, SLA monitoring, cost optimisation ($40k/month saved)
+- Data Engineer at AnalyticsCo (3 years): ETL pipelines, PostgreSQL, Redshift, Python
+TECHNICAL SKILLS
+Python, SQL, dbt, Airflow, Spark, Kafka, Snowflake, Redshift, BigQuery
+Great Expectations, Monte Carlo (data quality), Terraform, Docker, AWS
+Strong in data modeling, schema design, pipeline reliability
+EDUCATION
+MS Statistics, University of Chicago (2016)
+BS Applied Mathematics (2014)

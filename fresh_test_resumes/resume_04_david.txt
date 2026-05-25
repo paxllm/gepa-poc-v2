@@ -1,0 +1,22 @@
+David Lee
+Full Stack Developer | Self-Taught | 5 years
+
+SUMMARY
+Self-taught developer with strong passion for building products. No formal CS degree
+but extensive practical experience building production systems and leading small teams.
+
+EXPERIENCE
+- Founder/CTO at SideProject (2 years): Built SaaS product with 1000+ users
+- Senior Engineer at RemoteCompany (3 years): Architected backend system for millions of requests
+
+SKILLS
+JavaScript/TypeScript, React, Vue, Node.js, Python, PostgreSQL, MongoDB
+AWS, Vercel, Docker, GitHub Actions, Real-time systems, Messaging queues
+
+PROJECTS
+- SideProject SaaS: Architected and deployed
+- Open source contributions: 500+ stars on GitHub
+- Technical blog: 10k+ monthly readers
+
+CERTIFICATIONS
+None (self-taught through books, courses, practice)

@@ -1,0 +1,17 @@
+Xin Liu
+Senior Backend Engineer | 9 years
+SUMMARY
+Senior backend engineer with consistent record of building reliable, well-tested APIs
+and services. Values correctness, observability, and maintainable architecture.
+EXPERIENCE
+- Senior Backend Engineer at FinTechScaleup (5 years): Python/FastAPI core banking services
+  Event-driven architecture with Kafka, PostgreSQL, Redis; 99.99% uptime requirements
+  Led migration from monolith to services; reduced p99 latency 60%
+- Backend Engineer at APICompany (4 years): RESTful API platform, rate limiting, auth systems
+TECHNICAL SKILLS
+Python, Go, FastAPI, gRPC, Kafka, PostgreSQL, Redis, Elasticsearch
+Docker, Kubernetes, Terraform, AWS, DataDog, OpenTelemetry
+Testing: pytest (95%+ coverage on owned services), property-based testing (Hypothesis)
+EDUCATION
+BS Computer Science (2015)
+MS Software Engineering (part-time, 2019)

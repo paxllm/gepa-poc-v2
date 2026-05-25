@@ -1,0 +1,18 @@
+Gina Park
+Embedded Systems Engineer | 9 years
+SUMMARY
+Embedded engineer who has spent a career writing C and C++ for resource-constrained hardware.
+Now expanding scope to include edge computing and cloud-connected IoT systems.
+EXPERIENCE
+- Senior Embedded Engineer at IoTHardwareCo (6 years): Firmware for industrial sensors
+  Real-time OS, bare-metal C, I2C/SPI/UART protocols, safety-critical systems (IEC 61508)
+- Embedded Developer at AutomationCo (3 years): PLC programming, HMI interfaces
+NEW SKILLS (self-directed, past 18 months)
+Python, MQTT, AWS IoT Core, Docker, basic REST APIs
+Building cloud-edge bridge for industrial data collection
+TECHNICAL SKILLS
+C, C++, Python, RTOS (FreeRTOS, ThreadX), ARM Cortex
+Protocols: I2C, SPI, CAN, Modbus, MQTT
+Safety standards: IEC 61508, DO-178C awareness
+EDUCATION
+BS Electrical Engineering (2015)

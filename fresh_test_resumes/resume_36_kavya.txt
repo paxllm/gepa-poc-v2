@@ -1,0 +1,17 @@
+Kavya Reddy
+Cloud Infrastructure Engineer | 6 years
+SUMMARY
+Infrastructure engineer who started in traditional ops and moved steadily into cloud-native
+platform engineering. Strong in Terraform, Kubernetes, and platform automation.
+EXPERIENCE
+- Platform Engineer at CloudFirstStartup (3 years): Built internal developer platform
+  Terraform modules used by 80+ engineers, GitHub Actions CI, EKS cluster management,
+  reduced infra provisioning from 2 hours to 8 minutes via automation
+- Cloud Engineer at EnterpriseCo (3 years): AWS migration from on-prem, infrastructure-as-code
+TECHNICAL SKILLS
+Terraform, Ansible, Kubernetes, Helm, ArgoCD, AWS (EC2, EKS, RDS, S3, Lambda, IAM)
+Python scripting, Go (basic), Bash, monitoring (Prometheus, Grafana, PagerDuty)
+Security: IAM least-privilege, VPC design, secrets management
+EDUCATION
+BS Computer Science (2018)
+AWS Solutions Architect Professional (2021)

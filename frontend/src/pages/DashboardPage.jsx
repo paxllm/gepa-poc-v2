@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import {
   XAxis,
   YAxis,
@@ -14,6 +14,8 @@ import {
   listJobs,
   getOptimizationStatus,
   getOptimizationResults,
+  getTrainingStatus,
+  retrain as retrainApi,
 } from '../api/client';
 import { displayPromptText } from '../utils/promptDisplay';
 
@@ -41,6 +43,9 @@ export default function DashboardPage() {
   const [pollEnabled, setPollEnabled] = useState(true);
   const [runStartedAt, setRunStartedAt] = useState(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [training, setTraining] = useState(null);
+  const [retrainBusy, setRetrainBusy] = useState(false);
+  const [retrainError, setRetrainError] = useState('');
 
   useEffect(() => {
     setPollEnabled(true);
@@ -79,12 +84,14 @@ export default function DashboardPage() {
     if (!jobId) return;
 
     try {
-      const [statusRes, resultsRes] = await Promise.all([
+      const [statusRes, resultsRes, trainingRes] = await Promise.all([
         getOptimizationStatus(jobId),
         getOptimizationResults(jobId),
+        getTrainingStatus(jobId).catch(() => ({ data: null })),
       ]);
       setStatus(statusRes.data);
       setResults(resultsRes.data);
+      setTraining(trainingRes.data);
       const running = statusRes.data.status === 'running';
       setIsRunning(running);
       if (running) {
@@ -96,6 +103,21 @@ export default function DashboardPage() {
       setIsRunning(false);
     }
   }, [jobId]);
+
+  const handleRetrain = async () => {
+    if (!jobId || retrainBusy || isRunning) return;
+    setRetrainBusy(true);
+    setRetrainError('');
+    try {
+      await retrainApi(jobId);
+      setPollEnabled(true);
+      refreshData();
+    } catch (err) {
+      setRetrainError(err.response?.data?.detail || 'Failed to start re-training.');
+    } finally {
+      setRetrainBusy(false);
+    }
+  };
 
   useEffect(() => {
     if (!jobId || !pollEnabled) return;
@@ -270,8 +292,65 @@ export default function DashboardPage() {
               Live · updates every 3s
             </span>
           )}
+          <button
+            className="btn btn--secondary"
+            onClick={handleRetrain}
+            disabled={
+              !jobId ||
+              isRunning ||
+              retrainBusy ||
+              !training?.has_active_best_prompts
+            }
+            title={
+              !training?.has_active_best_prompts
+                ? 'Run /optimize first to produce an active best prompt set'
+                : 'Warm-start a new GEPA run seeded with the current best prompts'
+            }
+          >
+            {retrainBusy ? 'Starting…' : 'Re-train now'}
+          </button>
         </div>
       </div>
+
+      {retrainError && (
+        <div className="card mb-6" style={{ borderColor: 'var(--color-danger)' }}>
+          {retrainError}
+        </div>
+      )}
+
+      {training && (
+        <div
+          className="card mb-6"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '16px',
+            flexWrap: 'wrap',
+          }}
+        >
+          <div>
+            <div className="metric-card__label">Live candidates</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+              {training.decisions_since_last_train} / {training.auto_retrain_threshold}{' '}
+              decisions since last train
+            </div>
+            <div className="metric-card__trend">
+              {training.last_optimized_at
+                ? `Last optimized at ${new Date(training.last_optimized_at).toLocaleString()}`
+                : 'No optimization run yet.'}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <Link to="/score" className="btn btn--primary">
+              Score new candidate
+            </Link>
+            <Link to="/pending" className="btn btn--ghost">
+              Pending decisions
+            </Link>
+          </div>
+        </div>
+      )}
 
       {splitSummary && (
         <div className="card mb-6">

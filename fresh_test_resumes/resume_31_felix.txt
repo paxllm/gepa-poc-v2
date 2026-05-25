@@ -1,0 +1,18 @@
+Felix Osei
+Computer Science Student | Final Year
+SUMMARY
+Top computer science student at a strong university. Strong academic record
+and theoretical knowledge. Very limited real work experience beyond one short internship.
+EXPERIENCE
+- 6-week internship at LocalSME (1 summer): Maintained spreadsheets and wrote simple SQL queries
+- University coursework projects: built a compiler, OS scheduler, and ray tracer as assignments
+ACADEMIC RECORD
+GPA 3.95, Dean's List, Winner of university algorithm competition 2023
+Strong in algorithms, data structures, OS, compilers, theory of computation
+SKILLS
+Java, C, Haskell, Python (academic)
+No cloud, no production systems, no real team experience
+LOOKING FOR
+First real industry role. Eager to learn. Theoretical foundations strong.
+EDUCATION
+BS Computer Science, Expected 2025 (final year)

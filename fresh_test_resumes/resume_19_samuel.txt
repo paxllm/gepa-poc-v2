@@ -1,0 +1,22 @@
+Samuel Ayers
+Full Stack Engineer | 8 years
+
+SUMMARY
+Engineer with a varied career path—several short stints, one longer stint, strong skills.
+Left roles for a mix of personal reasons and company circumstances (2 layoffs, 1 relocation).
+Happy to discuss history openly.
+
+EXPERIENCE
+- Senior Engineer at GrowthCo (2.5 years): Built core product APIs in FastAPI/Python;
+  team grew from 5 to 40, led architectural decisions through hypergrowth
+- Engineer at StartupFail (8 months): Company folded after Series A fell through
+- Software Engineer at CloudServices (1.5 years): Infrastructure and backend for B2B SaaS
+- Junior Engineer at LocalAgency (1 year): Client web work; laid off in restructuring
+- Freelance (various, 2 years): React/Node projects for small businesses
+
+SKILLS
+Python, FastAPI, Node.js, React, TypeScript, PostgreSQL, Redis, AWS, Docker
+Strong in API design, data modelling, and performance debugging
+
+EDUCATION
+BS Computer Science (2016)

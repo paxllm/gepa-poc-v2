@@ -1,0 +1,23 @@
+Bianca Costa
+Senior Software Engineer | 9 years (incl. 2 year break)
+
+SUMMARY
+Senior engineer returning to full-time work after a 2-year parental leave.
+Completed a refresher course and rebuilt skills with a hands-on project during re-entry.
+
+EXPERIENCE
+- Parental leave (2 years): Primary caregiver. Used available time to complete AWS cert and rebuild skills.
+- Senior Software Engineer at ScaleupProduct (4 years): Technical lead on consumer mobile backend
+  Python/FastAPI services, PostgreSQL, real-time event processing, led team of 3
+- Software Engineer at WebAgency (3 years): React + Node.js client projects
+
+RE-ENTRY PROJECT (during leave)
+Rebuilt a production-quality REST API from scratch (FastAPI + PostgreSQL + Docker + GitHub Actions)
+with full test suite, deployed to AWS. Available for review on GitHub.
+
+SKILLS
+Python, FastAPI, React, Node.js, PostgreSQL, Redis, Docker, AWS
+
+EDUCATION
+BS Computer Science (2015)
+AWS Solutions Architect Associate (2024, during break)

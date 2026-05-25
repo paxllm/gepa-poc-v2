@@ -15,6 +15,7 @@ from typing import Any, TypedDict
 
 from backend.core.config import get_settings
 from backend.core.litellm_client import completion_with_retry, get_llm_timeout
+from backend.core import usage_tracker
 from backend.gepa_integration.evaluator import _parse_prompt_score
 from backend.gepa_integration.prompt_templates import (
     build_evaluation_prompt,
@@ -39,6 +40,12 @@ class PromptRunResult(TypedDict):
     score: float
     rationale: str
     response_text: str
+
+
+class ScoringResult(TypedDict):
+    aggregate_score: float
+    prediction: str
+    prompt_results: dict[str, PromptRunResult]
 
 
 class HiringTrajectory(TypedDict):
@@ -116,8 +123,12 @@ def _evaluate_one_prompt(
     hire_threshold: float,
     job_description: str,
     core_values: list[dict[str, str]],
+    _job_id: int | None = None,
+    _run_set_id: str | None = None,
+    _call_type: str = "evaluation",
 ) -> tuple[str, PromptRunResult]:
     """Evaluate a single prompt component against one resume."""
+    usage_tracker.set_call_context(_job_id, _run_set_id, _call_type)
     lens = extract_user_lens(candidate[key])
     composed = compose_talent_lens_prompt(lens, job_description, core_values)
     messages = build_evaluation_prompt(
@@ -145,6 +156,56 @@ def _evaluate_one_prompt(
     }
 
 
+def score_resume(
+    resume_text: str,
+    candidate: dict[str, str],
+    *,
+    task_lm_model: str,
+    hire_threshold: float,
+    job_description: str,
+    core_values: list[dict[str, str]],
+    job_id: int | None = None,
+    run_set_id: str | None = None,
+) -> ScoringResult:
+    """Score a single resume against a 5-prompt candidate set.
+
+    Standalone inference path used by the live-scoring endpoint. Shares
+    `_evaluate_one_prompt` with the GEPA optimization loop so the scoring
+    logic stays in lock-step.
+    """
+    max_workers = max(1, get_settings().llm_max_parallel)
+    prompt_results: dict[str, PromptRunResult] = {}
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {
+            executor.submit(
+                _evaluate_one_prompt,
+                key,
+                candidate,
+                resume_text,
+                task_lm_model=task_lm_model,
+                hire_threshold=hire_threshold,
+                job_description=job_description,
+                core_values=core_values,
+                _job_id=job_id,
+                _run_set_id=run_set_id,
+                _call_type="scoring",
+            ): key
+            for key in PROMPT_KEYS
+        }
+        for future in as_completed(futures):
+            key, result = future.result()
+            prompt_results[key] = result
+
+    numeric_scores = [prompt_results[key]["score"] for key in PROMPT_KEYS]
+    aggregate_score = sum(numeric_scores) / len(numeric_scores)
+    prediction = "Hired" if aggregate_score >= hire_threshold else "Rejected"
+    return {
+        "aggregate_score": aggregate_score,
+        "prediction": prediction,
+        "prompt_results": prompt_results,
+    }
+
+
 def _evaluate_single_resume(
     data: HiringDataInst,
     candidate: dict[str, str],
@@ -153,6 +214,8 @@ def _evaluate_single_resume(
     hire_threshold: float,
     job_description: str,
     core_values: list[dict[str, str]],
+    _job_id: int | None = None,
+    _run_set_id: str | None = None,
 ) -> tuple[float, HiringRolloutOutput, HiringTrajectory | None]:
     """Score one resume against a 5-prompt candidate (prompts evaluated with limited parallelism)."""
     resume_text = data["input"]
@@ -171,6 +234,9 @@ def _evaluate_single_resume(
                 hire_threshold=hire_threshold,
                 job_description=job_description,
                 core_values=core_values,
+                _job_id=_job_id,
+                _run_set_id=_run_set_id,
+                _call_type="evaluation",
             ): key
             for key in PROMPT_KEYS
         }
@@ -325,6 +391,12 @@ class HiringAdapter(GEPAAdapter[HiringDataInst, HiringTrajectory, HiringRolloutO
                     hire_threshold=self.hire_threshold,
                     job_description=self.job_description,
                     core_values=self.core_values,
+                    _job_id=self.job_id,
+                    _run_set_id=(
+                        self.run_status.get(self.job_id, {}).get("run_candidate_set_id")
+                        if self.run_status and self.job_id is not None
+                        else None
+                    ),
                 )
             except Exception as exc:
                 score = 0.0

@@ -1,0 +1,21 @@
+Igor Petrov
+Engineering Manager | Team Lead
+
+SUMMARY
+Experienced manager with 10+ years of software engineering.
+Recently transitioned to full management. Limited current coding experience.
+
+EXPERIENCE
+- Engineering Manager at TechCorp (2 years): Managing team of 8 engineers
+- Tech Lead at StartupXYZ (5 years): Led team but now mostly in meetings
+- Senior Engineer at OldTech (5 years): Individual contributor
+
+MANAGEMENT SKILLS
+Team leadership, Career development, Performance management, Budget planning
+
+TECHNICAL SKILLS
+Java, Python (older experience)
+Not actively coding in current role for 2 years
+
+EDUCATION
+BS Computer Science (2008)

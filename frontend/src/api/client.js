@@ -4,7 +4,7 @@
 
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'http://localhost:8001/api';
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -86,6 +86,46 @@ export const getMetrics = (jobId) =>
 
 export const getEvolutionLog = (jobId) =>
   api.get(`/jobs/${jobId}/evolution`);
+
+// ─── Live loop: score / decision / pending / training-status ───
+
+export const scoreCandidate = (jobId, file, candidateName, onProgress) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('candidate_name', candidateName);
+  return api.post(`/jobs/${jobId}/candidates/score`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    onUploadProgress: onProgress
+      ? (e) => onProgress(Math.round((e.loaded * 100) / e.total))
+      : undefined,
+  });
+};
+
+export const recordDecision = (jobId, resumeId, hiringLabel, note) =>
+  api.post(`/jobs/${jobId}/resumes/${resumeId}/decision`, {
+    hiring_label: hiringLabel,
+    note: note ?? null,
+  });
+
+export const listPendingCandidates = (jobId) =>
+  api.get(`/jobs/${jobId}/candidates/pending`);
+
+export const getTrainingStatus = (jobId) =>
+  api.get(`/jobs/${jobId}/training-status`);
+
+export const retrain = (jobId) =>
+  api.post(`/jobs/${jobId}/retrain`);
+
+// ─── Cost analysis ─────────────────────────────────────────────
+
+export const getJobCosts = (jobId) =>
+  api.get(`/jobs/${jobId}/costs`);
+
+export const getAllCosts = () =>
+  api.get('/costs/summary');
+
+export const getCostPricing = () =>
+  api.get('/costs/pricing');
 
 // ─── Health ────────────────────────────────────────────────────
 

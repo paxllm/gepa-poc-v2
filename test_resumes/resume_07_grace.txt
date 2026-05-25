@@ -1,0 +1,21 @@
+Grace Park
+Career Changer | Recently Graduated Bootcamp
+
+SUMMARY
+Making career transition from graphic design to web development.
+Completed 3-month intensive bootcamp. Eager to learn and grow.
+
+EXPERIENCE
+- Graphic Designer at AgencyXYZ (5 years): Designed logos and marketing materials
+- Bootcamp Student (3 months): Completed web development curriculum
+
+TECHNICAL SKILLS
+HTML, CSS, JavaScript (basics), WordPress, Figma
+Some React from bootcamp final project
+
+DESIGN SKILLS
+Strong in visual design, UX principles, Adobe Creative Suite
+
+EDUCATION
+BFA Graphic Design (2018)
+Web Development Bootcamp (2024)

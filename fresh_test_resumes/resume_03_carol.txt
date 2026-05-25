@@ -1,0 +1,25 @@
+Carol Singh
+Senior DevOps Engineer | Infrastructure Architect | 12 years
+
+SUMMARY
+Seasoned DevOps engineer with expertise in cloud infrastructure, CI/CD pipelines, and system reliability.
+Strong track record of building scalable systems and mentoring teams.
+
+EXPERIENCE
+- Senior DevOps Lead at MajorCorp (4 years): Managed infrastructure for 500+ engineers
+- Infrastructure Engineer at CloudStartup (3 years): Built entire cloud platform from scratch
+- Systems Engineer at BigTech (5 years): Managed petabyte-scale databases
+
+SKILLS
+Kubernetes, Docker, Terraform, CloudFormation, Jenkins, GitLab CI, AWS, GCP, Azure
+Python scripting, Go, Linux Administration, Networking, Security hardening
+System Design, High Availability, Disaster Recovery
+
+EDUCATION
+BS Computer Engineering, Prestigious University (2011)
+Multiple cloud certifications
+
+LEADERSHIP
+- Mentored 20+ engineers
+- Led cloud migration project affecting entire organization
+- Regular speaker at DevOps conferences

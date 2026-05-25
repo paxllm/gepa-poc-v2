@@ -1,0 +1,20 @@
+Lars Jensen
+PhD Computer Science | Theoretical Computer Science Researcher
+SUMMARY
+Theoretical computer scientist with expertise in computational complexity, formal verification,
+and type theory. 5 years post-PhD with 20 published papers. Zero industry experience.
+Seeking transition to software engineering role but honest about the gap.
+RESEARCH EXPERIENCE
+- Postdoctoral Researcher at University (3 years): Dependent type theory and proof assistants
+- PhD Researcher (3 years): Computational complexity, P vs NP related problems
+PUBLICATIONS
+20 papers in LICS, POPL, STACS (theoretical CS venues)
+CODE EXPERIENCE
+Coq, Agda (proof assistants), Haskell (research implementation)
+No Python, no web development, no cloud, no production engineering experience
+HONEST SELF-ASSESSMENT
+My code is mathematically rigorous but I have never shipped anything to real users.
+The gap between my theoretical skills and production engineering is very large.
+EDUCATION
+PhD Computer Science, ETH Zurich (2021)
+MS, BS Mathematics and CS

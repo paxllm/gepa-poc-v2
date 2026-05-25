@@ -1,0 +1,24 @@
+Frank Zhang
+Platform Engineer | Site Reliability Engineer | 9 years
+
+SUMMARY
+Specialist in building reliable, observable systems at scale.
+Deep expertise in distributed systems, observability, and incident response.
+
+EXPERIENCE
+- Platform Engineer at HyperScale (4 years): Built platform supporting 1000+ services
+- SRE at TechGiant (5 years): Maintained systems with 99.99% uptime
+
+TECHNICAL DEPTH
+Go, Rust, C++, Python
+Distributed systems fundamentals, Consensus algorithms, Transaction handling
+Prometheus, Grafana, ELK, Datadog, Splunk
+Linux kernel, Network troubleshooting, Performance optimization
+
+EXPERTISE
+- Reduced latency by 70% through system optimization
+- Designed on-call rotation reducing MTTR by 50%
+- Built observability platform used company-wide
+
+EDUCATION
+BS Physics + Computer Science (2014)

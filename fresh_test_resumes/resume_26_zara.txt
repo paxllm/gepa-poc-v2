@@ -1,0 +1,22 @@
+Zara Ahmed
+Product Manager | Aspiring Engineer | 6 years PM experience
+
+SUMMARY
+Senior PM at a Series B startup attempting to transition into engineering.
+Have been coding evenings and weekends for 8 months. Not ready for production work yet
+but looking for companies willing to hire me at a junior level.
+
+EXPERIENCE
+- Senior Product Manager at GrowthStartup (4 years): Owned 0-1 features, worked closely with engineers
+- Product Manager at B2BSaaS (2 years): Roadmap, user research, sprint planning
+
+TECHNICAL (8 months self-study)
+Completed Python fundamentals course and half of a web dev bootcamp curriculum
+Comfortable reading code; uncomfortable writing it independently
+Built one todo app following a tutorial
+
+STRONG BACKGROUND
+Product intuition, user research, stakeholder communication, data analysis (SQL queries)
+
+EDUCATION
+BA Psychology, NYU (2018)
